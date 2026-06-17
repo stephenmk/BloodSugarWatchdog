@@ -12,7 +12,7 @@ internal static class Program
             return 1;
 
         Importer importer;
-        int importedCount;
+        int importedCount = 0;
         switch (parsedArgs.DataType)
         {
             case DataType.Bgl:
@@ -25,6 +25,7 @@ internal static class Program
                 break;
         }
 
+        Console.Error.WriteLine($"Imported {importedCount:N0} new records.");
         return 0;
     }
 
