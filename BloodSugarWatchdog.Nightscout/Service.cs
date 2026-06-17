@@ -20,10 +20,10 @@ internal sealed partial class Service
             var treatments = await client.GetTreatmentsAsync(ct) ?? [];
 
             var bglCount = bglImporter.Import(entries);
-            Console.Error.WriteLine($"Downloaded {bglCount:N0} new BGL entries.");
+            Console.Error.WriteLine($"{DateTime.Now:G}\tDownloaded {bglCount:N0} new BGL entries.");
 
             var treatmentCount = treatmentImporter.Import(treatments);
-            Console.Error.WriteLine($"Downloaded {treatmentCount:N0} new treatment records.");
+            Console.Error.WriteLine($"{DateTime.Now:G}\tDownloaded {treatmentCount:N0} new treatment records.");
 
             await delayTask;
         }
