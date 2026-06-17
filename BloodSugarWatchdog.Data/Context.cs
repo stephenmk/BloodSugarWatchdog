@@ -1,8 +1,8 @@
-namespace BloodSugarWatchdog.Data;
-
 using BloodSugarWatchdog.Data.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+
+namespace BloodSugarWatchdog.Data;
 
 public sealed class Context : DbContext
 {
