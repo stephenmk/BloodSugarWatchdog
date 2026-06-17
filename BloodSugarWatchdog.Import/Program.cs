@@ -6,15 +6,23 @@ internal static class Program
 {
     private static int Main(string[] args)
     {
-        Option<string> usernameOption = new("--user")
-        {
-            Required = true
-        };
+        var parsedArgs = ParseArgs(args);
 
-        Option<DirectoryInfo> dirOption = new("--directory")
-        {
-            Required = true
-        };
+        if (parsedArgs is null)
+            return 1;
+
+        var importer = new BglImporter();
+        importer.Import(parsedArgs.Username, parsedArgs.Directory);
+
+        return 0;
+    }
+
+    private sealed record ParsedArgs(string Username, DirectoryInfo Directory);
+
+    private static ParsedArgs? ParseArgs(string[] args)
+    {
+        var usernameOption = new Option<string>("--user") { Required = true };
+        var dirOption = new Option<DirectoryInfo>("--directory") { Required = true };
 
         var rootCommand = new RootCommand("Import nightscout data from JSON files")
         {
@@ -25,14 +33,10 @@ internal static class Program
         var parseResult = rootCommand.Parse(args);
 
         foreach (var parseError in parseResult.Errors)
-        {
             Console.Error.WriteLine(parseError.Message);
-        }
 
         if (parseResult.Errors.Any())
-        {
-            return 1;
-        }
+            return null;
 
         var username = parseResult.GetRequiredValue(usernameOption);
         var dir = parseResult.GetRequiredValue(dirOption);
@@ -40,13 +44,9 @@ internal static class Program
         if (!dir.Exists)
         {
             Console.Error.WriteLine($"Directory at path {dir.FullName} does not exist.");
-            return 1;
+            return null;
         }
 
-        var importer = new BglImporter();
-
-        importer.Import(username, dir);
-
-        return 0;
+        return new(username, dir);
     }
 }
