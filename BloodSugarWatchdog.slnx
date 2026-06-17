@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BloodSugarWatchdog.Data/BloodSugarWatchdog.Data.csproj" />
+  <Project Path="BloodSugarWatchdog.Import/BloodSugarWatchdog.Import.csproj" />
+</Solution>
