@@ -103,16 +103,16 @@ public sealed class BglImporter : Importer
     {
         if (obj.ContainsKey("sysTime") && obj.ContainsKey("dateString"))
         {
-            var sysTime = DateTime.Parse((string)obj["sysTime"]!);
-            var date = DateTime.Parse((string)obj["dateString"]!);
+            var sysTime = DateTime.Parse((string)obj["sysTime"]!).ToUniversalTime();
+            var date = DateTime.Parse((string)obj["dateString"]!).ToUniversalTime();
             if (sysTime != date)
                 throw new Exception("`sysTime` and `dateString` values are not equal");
             return sysTime;
         }
         else if (obj.ContainsKey("sysTime"))
-            return DateTime.Parse((string)obj["sysTime"]!);
+            return DateTime.Parse((string)obj["sysTime"]!).ToUniversalTime();
         else if (obj.ContainsKey("dateString"))
-            return DateTime.Parse((string)obj["dateString"]!);
+            return DateTime.Parse((string)obj["dateString"]!).ToUniversalTime();
         else
             throw new Exception("No `sysTime` or `dateString` property found");
     }
