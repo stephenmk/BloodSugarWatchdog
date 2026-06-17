@@ -9,7 +9,7 @@ public sealed class Bgl
     public required string Type { get; init; }
     public required int DeviceId { get; init; }
     public required int Sgv { get; init; }
-    public required string Delta { get; init; }
+    public required decimal Delta { get; init; }
     public required BglDirectionType DirectionType { get; init; }
     public required int Filtered { get; init; }
     public required int Unfiltered { get; init; }

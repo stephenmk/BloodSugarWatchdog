@@ -48,7 +48,7 @@ public sealed class BglImporter : Importer
             DeviceId = GetDeviceId(obj),
             Sgv = (int)obj["sgv"]!,
             Timestamp = GetTimestamp(obj),
-            Delta = obj["delta"]!.ToString(),
+            Delta = (decimal)obj["delta"]!,
             Filtered = (int)obj["filtered"]!,
             Unfiltered = (int)obj["unfiltered"]!,
             Rssi = (int)obj["rssi"]!,
