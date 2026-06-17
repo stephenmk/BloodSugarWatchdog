@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Data.Entities;
@@ -124,4 +125,24 @@ public sealed class BglImporter : Importer
         _                   => throw new ArgumentOutOfRangeException(nameof(direction))
     };
     #pragma warning restore format
+
+    protected override FrozenSet<string> KnownProperties { get; } = new HashSet<string>()
+    {
+        "_id",
+        "date",
+        "dateString",
+        "delta",
+        "device",
+        "direction",
+        "filtered",
+        "mills",
+        "noise",
+        "rssi",
+        "sgv",
+        "sysTime",
+        "type",
+        "unfiltered",
+        "utcOffset",
+    }
+    .ToFrozenSet();
 }

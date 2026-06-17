@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
@@ -46,6 +47,11 @@ public abstract class Importer
         {
             try
             {
+                foreach (var (property, _) in obj)
+                {
+                    if (!KnownProperties.Contains(property))
+                        throw new Exception($"Unknown property name `{property}`");
+                }
                 ProcessObj(context, obj);
             }
             catch
@@ -58,4 +64,5 @@ public abstract class Importer
     }
 
     protected abstract void ProcessObj(Context context, JsonObject obj);
+    protected abstract FrozenSet<string> KnownProperties { get; }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Data.Entities;
@@ -92,4 +93,24 @@ public sealed class TreatmentImporter : Importer
         else
             throw new Exception("No `sysTime` or `created_at` property found");
     }
+
+    protected override FrozenSet<string> KnownProperties { get; } = new HashSet<string>()
+    {
+        "_id",
+        "enteredBy",
+        "eventType",
+        "uuid",
+        "insulin",
+        "insulinType",
+        "insulinInjections",
+        "carbs",
+        "notes",
+        "utcOffset",
+        "mills",
+        "timestamp",
+        "date",
+        "sysTime",
+        "created_at"
+    }
+    .ToFrozenSet();
 }
