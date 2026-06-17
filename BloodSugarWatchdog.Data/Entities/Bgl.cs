@@ -3,7 +3,6 @@ using BloodSugarWatchdog.Data.Enums;
 
 namespace BloodSugarWatchdog.Data.Entities;
 
-[Table(nameof(Bgl))]
 public sealed class Bgl
 {
     public required string Id { get; init; }
