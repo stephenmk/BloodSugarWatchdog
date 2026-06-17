@@ -16,7 +16,7 @@ internal static class Program
             Required = true
         };
 
-        var rootCommand = new RootCommand("Import JMdict XML documents")
+        var rootCommand = new RootCommand("Import nightscout data from JSON files")
         {
             usernameOption,
             dirOption,
