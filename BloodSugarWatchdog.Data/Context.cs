@@ -1,5 +1,6 @@
 namespace BloodSugarWatchdog.Data;
 
+using BloodSugarWatchdog.Data.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 

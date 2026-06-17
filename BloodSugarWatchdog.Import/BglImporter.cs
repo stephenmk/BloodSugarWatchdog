@@ -1,5 +1,7 @@
 using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
+using BloodSugarWatchdog.Data.Entities;
+using BloodSugarWatchdog.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace BloodSugarWatchdog.Import;

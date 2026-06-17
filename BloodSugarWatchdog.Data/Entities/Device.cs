@@ -1,4 +1,4 @@
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarWatchdog.Data.Entities;
 
 public sealed class Device
 {

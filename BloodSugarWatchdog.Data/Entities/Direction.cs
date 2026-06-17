@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BloodSugarWatchdog.Data.Enums;
 
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarWatchdog.Data.Entities;
 
 [Table(nameof(Direction))]
 public sealed class Direction

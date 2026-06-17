@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using BloodSugarWatchdog.Data.Enums;
 
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarWatchdog.Data.Entities;
 
 [Table(nameof(Bgl))]
 public sealed class Bgl

@@ -1,4 +1,4 @@
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarWatchdog.Data.Enums;
 
 public enum DirectionType
 {
