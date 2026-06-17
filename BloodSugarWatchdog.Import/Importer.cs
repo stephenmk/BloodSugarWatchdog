@@ -7,35 +7,38 @@ namespace BloodSugarWatchdog.Import;
 
 public abstract class Importer
 {
-    public void Import(string username, DirectoryInfo directory)
+    public int Import(string username, DirectoryInfo directory)
     {
         using var context = new Context(username);
         context.Database.EnsureCreated();
 
         Initialize(context);
-        ProcessDirectory(context, directory);
+        var count = ProcessDirectory(context, directory);
 
         context.SaveChanges();
+        return count;
     }
 
     protected abstract void Initialize(Context context);
 
-    private void ProcessDirectory(Context context, DirectoryInfo directory)
+    private int ProcessDirectory(Context context, DirectoryInfo directory)
     {
+        int count = 0;
         foreach (var info in directory.GetFileSystemInfos())
         {
             if (info is FileInfo file && file.FullName.EndsWith(".json"))
             {
-                ProcessFile(context, file);
+                count += ProcessFile(context, file);
             }
             else if (info is DirectoryInfo subdir)
             {
-                ProcessDirectory(context, subdir);
+                count += ProcessDirectory(context, subdir);
             }
         }
+        return count;
     }
 
-    private void ProcessFile(Context context, FileInfo file)
+    private int ProcessFile(Context context, FileInfo file)
     {
         Console.Error.WriteLine(file.FullName);
         Dictionary<string, JsonObject> data;
@@ -43,6 +46,7 @@ public abstract class Importer
         {
             data = JsonSerializer.Deserialize<Dictionary<string, JsonObject>>(stream) ?? [];
         }
+        int count = 0;
         foreach (var (key, obj) in data)
         {
             try
@@ -52,7 +56,8 @@ public abstract class Importer
                     if (!KnownProperties.Contains(property))
                         throw new Exception($"Unknown property name `{property}`");
                 }
-                ProcessObj(context, obj);
+                if (ProcessObj(context, obj))
+                    count++;
             }
             catch
             {
@@ -61,8 +66,9 @@ public abstract class Importer
             }
         }
         context.SaveChanges();
+        return count;
     }
 
-    protected abstract void ProcessObj(Context context, JsonObject obj);
+    protected abstract bool ProcessObj(Context context, JsonObject obj);
     protected abstract FrozenSet<string> KnownProperties { get; }
 }

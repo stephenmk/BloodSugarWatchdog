@@ -13,13 +13,12 @@ public sealed class TreatmentImporter : Importer
         context.TreatmentDevices.Load();
     }
 
-    protected override void ProcessObj(Context context, JsonObject obj)
+    protected override bool ProcessObj(Context context, JsonObject obj)
     {
         var id = (string)obj["_id"]!;
-        if (context.Treatments.Any(b => b.Id == id))
-        {
-            return;
-        }
+
+        if (context.Treatments.Any(treatment => treatment.Id == id))
+            return false;
 
         context.Treatments.Add(new Treatment
         {
@@ -28,7 +27,9 @@ public sealed class TreatmentImporter : Importer
             DeviceId = GetDeviceId(context, obj),
             Timestamp = GetTimestamp(obj),
             UUID = (string?)obj["uuid"],
-            Insulin = (double?)obj["insulin"] is double insulin ? Math.Round(insulin, 3) : null,
+            Insulin = (double?)obj["insulin"] is double insulin
+                ? Math.Round(insulin, 3)
+                : null,
             InsulinType = (string?)obj["insulinType"],
             InsulinInjections = (string?)obj["insulinInjections"],
             Carbs = (double?)obj["carbs"],
@@ -36,14 +37,14 @@ public sealed class TreatmentImporter : Importer
             UtcOffset = (int)obj["utcOffset"]!,
             SysTime = GetSysTime(obj),
         });
-    }
 
-    private static string? GetNullableStringProperty(JsonObject obj, string key)
-        => obj[key] is null ? null : obj[key]!.ToString();
+        return true;
+    }
 
     private static int GetDeviceId(Context context, JsonObject obj)
     {
         var name = (string?)obj["enteredBy"];
+
         if (!context.TreatmentDevices.Any(d => d.Name == name))
         {
             context.TreatmentDevices.Add(new TreatmentDevice
@@ -53,7 +54,11 @@ public sealed class TreatmentImporter : Importer
             });
             context.SaveChanges();
         }
-        return context.TreatmentDevices.Where(d => d.Name == name).First().Id;
+
+        return context.TreatmentDevices
+            .Where(d => d.Name == name)
+            .First()
+            .Id;
     }
 
     private static long? GetTimestamp(JsonObject obj)
@@ -97,20 +102,20 @@ public sealed class TreatmentImporter : Importer
     protected override FrozenSet<string> KnownProperties { get; } = new HashSet<string>()
     {
         "_id",
+        "carbs",
+        "created_at",
+        "date",
         "enteredBy",
         "eventType",
-        "uuid",
         "insulin",
-        "insulinType",
         "insulinInjections",
-        "carbs",
-        "notes",
-        "utcOffset",
+        "insulinType",
         "mills",
-        "timestamp",
-        "date",
+        "notes",
         "sysTime",
-        "created_at"
+        "timestamp",
+        "utcOffset",
+        "uuid",
     }
     .ToFrozenSet();
 }

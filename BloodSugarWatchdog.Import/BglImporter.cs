@@ -32,13 +32,12 @@ public sealed class BglImporter : Importer
         }
     }
 
-    protected override void ProcessObj(Context context, JsonObject obj)
+    protected override bool ProcessObj(Context context, JsonObject obj)
     {
         var id = (string)obj["_id"]!;
-        if (context.Bgls.Any(b => b.Id == id))
-        {
-            return;
-        }
+
+        if (context.Bgls.Any(bgl => bgl.Id == id))
+            return false;
 
         context.Bgls.Add(new Bgl
         {
@@ -56,11 +55,14 @@ public sealed class BglImporter : Importer
             SysTime = GetSysTime(obj),
             DirectionType = DirectionToDirectionType((string)obj["direction"]!),
         });
+
+        return true;
     }
 
     private static int GetDeviceId(Context context, JsonObject obj)
     {
         var name = (string)obj["device"]!;
+
         if (!context.BglDevices.Any(d => d.Name == name))
         {
             context.BglDevices.Add(new BglDevice
@@ -70,7 +72,11 @@ public sealed class BglImporter : Importer
             });
             context.SaveChanges();
         }
-        return context.BglDevices.Where(d => d.Name == name).First().Id;
+
+        return context.BglDevices
+            .Where(d => d.Name == name)
+            .First()
+            .Id;
     }
 
     private static long GetTimestamp(JsonObject obj)

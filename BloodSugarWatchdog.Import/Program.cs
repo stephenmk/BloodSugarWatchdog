@@ -12,15 +12,16 @@ internal static class Program
             return 1;
 
         Importer importer;
+        int importedCount;
         switch (parsedArgs.DataType)
         {
             case DataType.Bgl:
                 importer = new BglImporter();
-                importer.Import(parsedArgs.Username, parsedArgs.Directory);
+                importedCount = importer.Import(parsedArgs.Username, parsedArgs.Directory);
                 break;
             case DataType.Treatment:
                 importer = new TreatmentImporter();
-                importer.Import(parsedArgs.Username, parsedArgs.Directory);
+                importedCount = importer.Import(parsedArgs.Username, parsedArgs.Directory);
                 break;
         }
 
