@@ -8,23 +8,25 @@ namespace BloodSugarWatchdog.Import;
 
 public sealed class TreatmentImporter : Importer
 {
-    protected override void Initialize(Context context)
+    public TreatmentImporter(Context context) : base(context) { }
+
+    protected override void Initialize()
     {
-        context.TreatmentDevices.Load();
+        _context.TreatmentDevices.Load();
     }
 
-    protected override bool ProcessObj(Context context, JsonObject obj)
+    protected override bool ProcessObj(JsonObject obj)
     {
         var id = (string)obj["_id"]!;
 
-        if (context.Treatments.Any(treatment => treatment.Id == id))
+        if (_context.Treatments.Any(treatment => treatment.Id == id))
             return false;
 
-        context.Treatments.Add(new Treatment
+        _context.Treatments.Add(new Treatment
         {
             Id = id,
             EventType = (string)obj["eventType"]!,
-            DeviceId = GetDeviceId(context, obj),
+            DeviceId = GetDeviceId(_context, obj),
             Timestamp = GetTimestamp(obj),
             UUID = (string?)obj["uuid"],
             Insulin = (double?)obj["insulin"] is double insulin

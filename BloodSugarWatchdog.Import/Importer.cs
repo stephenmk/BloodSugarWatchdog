@@ -7,38 +7,65 @@ namespace BloodSugarWatchdog.Import;
 
 public abstract class Importer
 {
-    public int Import(string username, DirectoryInfo directory)
+    protected readonly Context _context;
+
+    protected Importer(Context context)
     {
-        using var context = new Context(username);
-        context.Database.EnsureCreated();
+        _context = context;
+    }
 
-        Initialize(context);
-        var count = ProcessDirectory(context, directory);
+    public int Import(DirectoryInfo directory)
+    {
+        Initialize();
+        return ProcessDirectory(directory);
+    }
 
-        context.SaveChanges();
+    public int Import(JsonArray array)
+    {
+        Initialize();
+
+        int count = 0;
+        foreach (var node in array)
+        {
+            if (node is not JsonObject obj)
+            {
+                Console.Error.WriteLine($"JsonArray contains unexpected node type `{node?.GetElementIndex()}`");
+                continue;
+            }
+            try
+            {
+                count += ProcessObject(obj);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        _context.SaveChanges();
         return count;
     }
 
-    protected abstract void Initialize(Context context);
+    protected abstract void Initialize();
 
-    private int ProcessDirectory(Context context, DirectoryInfo directory)
+    private int ProcessDirectory(DirectoryInfo directory)
     {
         int count = 0;
         foreach (var info in directory.GetFileSystemInfos())
         {
             if (info is FileInfo file && file.FullName.EndsWith(".json"))
             {
-                count += ProcessFile(context, file);
+                count += ProcessFile(file);
             }
             else if (info is DirectoryInfo subdir)
             {
-                count += ProcessDirectory(context, subdir);
+                count += ProcessDirectory(subdir);
             }
         }
         return count;
     }
 
-    private int ProcessFile(Context context, FileInfo file)
+    private int ProcessFile(FileInfo file)
     {
         Console.Error.WriteLine(file.FullName);
         Dictionary<string, JsonObject> data;
@@ -51,13 +78,7 @@ public abstract class Importer
         {
             try
             {
-                foreach (var (property, _) in obj)
-                {
-                    if (!KnownProperties.Contains(property))
-                        throw new Exception($"Unknown property name `{property}`");
-                }
-                if (ProcessObj(context, obj))
-                    count++;
+                count += ProcessObject(obj);
             }
             catch
             {
@@ -65,10 +86,23 @@ public abstract class Importer
                 throw;
             }
         }
-        context.SaveChanges();
+        _context.SaveChanges();
         return count;
     }
 
-    protected abstract bool ProcessObj(Context context, JsonObject obj);
+    private int ProcessObject(JsonObject obj)
+    {
+        int count = 0;
+        foreach (var (property, _) in obj)
+        {
+            if (!KnownProperties.Contains(property))
+                throw new Exception($"Unknown property name `{property}`");
+        }
+        if (ProcessObj(obj))
+            count++;
+        return count;
+    }
+
+    protected abstract bool ProcessObj(JsonObject obj);
     protected abstract FrozenSet<string> KnownProperties { get; }
 }

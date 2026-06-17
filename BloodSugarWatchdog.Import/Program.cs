@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using BloodSugarWatchdog.Data;
 
 namespace BloodSugarWatchdog.Import;
 
@@ -11,21 +12,24 @@ internal static class Program
         if (parsedArgs is null)
             return 1;
 
-        Importer importer;
-        int importedCount = 0;
+        using var context = new Context(parsedArgs.Username);
+        context.Database.EnsureCreated();
+
+        int count = 0;
+
         switch (parsedArgs.DataType)
         {
             case DataType.Bgl:
-                importer = new BglImporter();
-                importedCount = importer.Import(parsedArgs.Username, parsedArgs.Directory);
+                var bglImporter = new BglImporter(context);
+                count = bglImporter.Import(parsedArgs.Directory);
                 break;
             case DataType.Treatment:
-                importer = new TreatmentImporter();
-                importedCount = importer.Import(parsedArgs.Username, parsedArgs.Directory);
+                var treatmentImporter = new TreatmentImporter(context);
+                count = treatmentImporter.Import(parsedArgs.Directory);
                 break;
         }
 
-        Console.Error.WriteLine($"Imported {importedCount:N0} new records.");
+        Console.Error.WriteLine($"Imported {count:N0} new records.");
         return 0;
     }
 

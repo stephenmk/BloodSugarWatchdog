@@ -9,22 +9,24 @@ namespace BloodSugarWatchdog.Import;
 
 public sealed class BglImporter : Importer
 {
-    protected override void Initialize(Context context)
+    public BglImporter(Context context) : base(context) { }
+
+    protected override void Initialize()
     {
-        context.BglDevices.Load();
-        InitializeDirections(context);
+        _context.BglDevices.Load();
+        InitializeDirections();
     }
 
-    private static void InitializeDirections(Context context)
+    private void InitializeDirections()
     {
-        context.BglDirections.Load();
-        if (context.BglDirections.Any())
+        _context.BglDirections.Load();
+        if (_context.BglDirections.Any())
         {
             return;
         }
         foreach (var type in Enum.GetValues<BglDirectionType>())
         {
-            context.BglDirections.Add(new BglDirection
+            _context.BglDirections.Add(new BglDirection
             {
                 Type = type,
                 Name = type.ToString(),
@@ -32,18 +34,18 @@ public sealed class BglImporter : Importer
         }
     }
 
-    protected override bool ProcessObj(Context context, JsonObject obj)
+    protected override bool ProcessObj(JsonObject obj)
     {
         var id = (string)obj["_id"]!;
 
-        if (context.Bgls.Any(bgl => bgl.Id == id))
+        if (_context.Bgls.Any(bgl => bgl.Id == id))
             return false;
 
-        context.Bgls.Add(new Bgl
+        _context.Bgls.Add(new Bgl
         {
             Id = id,
             Type = (string)obj["type"]!,
-            DeviceId = GetDeviceId(context, obj),
+            DeviceId = GetDeviceId(obj),
             Sgv = (int)obj["sgv"]!,
             Timestamp = GetTimestamp(obj),
             Delta = obj["delta"]!.ToString(),
@@ -59,21 +61,21 @@ public sealed class BglImporter : Importer
         return true;
     }
 
-    private static int GetDeviceId(Context context, JsonObject obj)
+    private int GetDeviceId(JsonObject obj)
     {
         var name = (string)obj["device"]!;
 
-        if (!context.BglDevices.Any(d => d.Name == name))
+        if (!_context.BglDevices.Any(d => d.Name == name))
         {
-            context.BglDevices.Add(new BglDevice
+            _context.BglDevices.Add(new BglDevice
             {
                 Id = default,
                 Name = name,
             });
-            context.SaveChanges();
+            _context.SaveChanges();
         }
 
-        return context.BglDevices
+        return _context.BglDevices
             .Where(d => d.Name == name)
             .First()
             .Id;
