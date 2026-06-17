@@ -4,7 +4,7 @@ using BloodSugarWatchdog.Data;
 
 namespace BloodSugarWatchdog.Import;
 
-internal abstract class Importer
+public abstract class Importer
 {
     public void Import(string username, DirectoryInfo directory)
     {

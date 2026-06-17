@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BloodSugarWatchdog.Import;
 
-internal sealed class BglImporter : Importer
+public sealed class BglImporter : Importer
 {
     protected override void Initialize(Context context)
     {

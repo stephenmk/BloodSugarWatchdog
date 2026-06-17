@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BloodSugarWatchdog.Import;
 
-internal sealed class TreatmentImporter : Importer
+public sealed class TreatmentImporter : Importer
 {
     protected override void Initialize(Context context)
     {
