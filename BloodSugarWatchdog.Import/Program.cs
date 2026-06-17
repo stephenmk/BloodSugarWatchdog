@@ -29,7 +29,7 @@ internal static class Program
             Console.Error.WriteLine(parseError.Message);
         }
 
-        if (parseResult.Errors.Count > 0)
+        if (parseResult.Errors.Any())
         {
             return 1;
         }
