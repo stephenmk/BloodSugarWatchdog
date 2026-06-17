@@ -40,7 +40,7 @@ internal sealed class BglImporter : Importer
         context.Bgls.Add(new Bgl
         {
             Id = id,
-            Type = obj.ContainsKey("type") ? (string)obj["type"]! : null,
+            Type = (string)obj["type"]!,
             DeviceId = GetDeviceId(context, obj),
             Sgv = (int)obj["sgv"]!,
             Timestamp = GetTimestamp(obj),

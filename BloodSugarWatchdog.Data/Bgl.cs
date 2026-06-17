@@ -6,7 +6,7 @@ namespace BloodSugarWatchdog.Data;
 public sealed class Bgl
 {
     public required string Id { get; init; }
-    public required string? Type { get; init; }
+    public required string Type { get; init; }
     public required int DeviceId { get; init; }
     public required int Sgv { get; init; }
     public required string Delta { get; init; }
