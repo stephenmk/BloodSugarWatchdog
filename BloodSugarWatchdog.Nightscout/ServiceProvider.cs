@@ -5,7 +5,7 @@ namespace BloodSugarWatchdog.Nightscout;
 
 internal sealed class ServiceProvider
 {
-    public INightscoutService GetService(string username)
+    public IService GetService(string username)
     {
         var context = new Context(username);
         context.Database.EnsureCreated();

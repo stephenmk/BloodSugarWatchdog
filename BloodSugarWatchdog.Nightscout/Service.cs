@@ -8,7 +8,7 @@ internal sealed partial class Service
     BglImporter bglImporter,
     TreatmentImporter treatmentImporter
 )
-    : INightscoutService
+    : IService
 {
     public async Task RunAsync(int millisecondsDelay, CancellationToken ct = default)
     {
