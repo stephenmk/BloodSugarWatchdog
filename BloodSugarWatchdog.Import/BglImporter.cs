@@ -10,20 +10,20 @@ internal sealed class BglImporter : Importer
 {
     protected override void Initialize(Context context)
     {
-        context.Devices.Load();
+        context.BglDevices.Load();
         InitializeDirections(context);
     }
 
     private static void InitializeDirections(Context context)
     {
-        context.Directions.Load();
-        if (context.Directions.Any())
+        context.BglDirections.Load();
+        if (context.BglDirections.Any())
         {
             return;
         }
-        foreach (var type in Enum.GetValues<DirectionType>())
+        foreach (var type in Enum.GetValues<BglDirectionType>())
         {
-            context.Directions.Add(new Direction
+            context.BglDirections.Add(new BglDirection
             {
                 Type = type,
                 Name = type.ToString(),
@@ -60,16 +60,16 @@ internal sealed class BglImporter : Importer
     private static int GetDeviceId(Context context, JsonObject obj)
     {
         var name = (string)obj["device"]!;
-        if (!context.Devices.Any(d => d.Name == name))
+        if (!context.BglDevices.Any(d => d.Name == name))
         {
-            context.Devices.Add(new Device
+            context.BglDevices.Add(new BglDevice
             {
                 Id = default,
                 Name = name,
             });
             context.SaveChanges();
         }
-        return context.Devices.Where(d => d.Name == name).First().Id;
+        return context.BglDevices.Where(d => d.Name == name).First().Id;
     }
 
     private static long GetTimestamp(JsonObject obj)
@@ -109,18 +109,18 @@ internal sealed class BglImporter : Importer
     }
 
     #pragma warning disable format
-    private static DirectionType DirectionToDirectionType(string direction) => direction switch
+    private static BglDirectionType DirectionToDirectionType(string direction) => direction switch
     {
-        "NONE"              => DirectionType.None,
-        "DoubleUp"          => DirectionType.DoubleUp,
-        "SingleUp"          => DirectionType.SingleUp,
-        "FortyFiveUp"       => DirectionType.FortyFiveUp,
-        "Flat"              => DirectionType.Flat,
-        "FortyFiveDown"     => DirectionType.FortyFiveDown,
-        "SingleDown"        => DirectionType.SingleDown,
-        "DoubleDown"        => DirectionType.DoubleDown,
-        "NOT COMPUTABLE"    => DirectionType.NotComputable,
-        "RATE OUT OF RANGE" => DirectionType.RateOutOfRange,
+        "NONE"              => BglDirectionType.None,
+        "DoubleUp"          => BglDirectionType.DoubleUp,
+        "SingleUp"          => BglDirectionType.SingleUp,
+        "FortyFiveUp"       => BglDirectionType.FortyFiveUp,
+        "Flat"              => BglDirectionType.Flat,
+        "FortyFiveDown"     => BglDirectionType.FortyFiveDown,
+        "SingleDown"        => BglDirectionType.SingleDown,
+        "DoubleDown"        => BglDirectionType.DoubleDown,
+        "NOT COMPUTABLE"    => BglDirectionType.NotComputable,
+        "RATE OUT OF RANGE" => BglDirectionType.RateOutOfRange,
         _                   => throw new ArgumentOutOfRangeException(nameof(direction))
     };
     #pragma warning restore format

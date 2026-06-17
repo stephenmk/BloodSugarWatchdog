@@ -25,6 +25,9 @@ public sealed class Context : DbContext
         => options.UseSqlite(_dbPath);
 
     public DbSet<Bgl> Bgls { get; set; } = null!;
-    public DbSet<Direction> Directions { get; set; } = null!;
-    public DbSet<Device> Devices { get; set; } = null!;
+    public DbSet<BglDirection> BglDirections { get; set; } = null!;
+    public DbSet<BglDevice> BglDevices { get; set; } = null!;
+
+    public DbSet<Treatment> Treatments { get; set; } = null!;
+    public DbSet<TreatmentDevice> TreatmentDevices { get; set; } = null!;
 }

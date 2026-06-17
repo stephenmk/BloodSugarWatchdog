@@ -10,7 +10,7 @@ public sealed class Bgl
     public required int DeviceId { get; init; }
     public required int Sgv { get; init; }
     public required string Delta { get; init; }
-    public required DirectionType DirectionType { get; init; }
+    public required BglDirectionType DirectionType { get; init; }
     public required int Filtered { get; init; }
     public required int Unfiltered { get; init; }
     public required int Rssi { get; init; }
@@ -20,8 +20,8 @@ public sealed class Bgl
     public required int UtcOffset { get; init; }
 
     [ForeignKey(nameof(DirectionType))]
-    public Direction Direction { get; init; } = null!;
+    public BglDirection Direction { get; init; } = null!;
 
     [ForeignKey(nameof(DeviceId))]
-    public Device Device { get; init; } = null!;
+    public BglDevice Device { get; init; } = null!;
 }

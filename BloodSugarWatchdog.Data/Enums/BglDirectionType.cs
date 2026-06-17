@@ -1,6 +1,6 @@
 namespace BloodSugarWatchdog.Data.Enums;
 
-public enum DirectionType
+public enum BglDirectionType
 {
     None,
     DoubleUp,
