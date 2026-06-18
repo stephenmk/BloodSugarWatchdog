@@ -121,22 +121,23 @@ public sealed class BglImporter : Importer
             throw new Exception("No `sysTime` or `dateString` property found");
     }
 
-    #pragma warning disable format
-    private static BglDirectionType DirectionToDirectionType(string direction) => direction switch
-    {
-        "NONE"              => BglDirectionType.None,
-        "DoubleUp"          => BglDirectionType.DoubleUp,
-        "SingleUp"          => BglDirectionType.SingleUp,
-        "FortyFiveUp"       => BglDirectionType.FortyFiveUp,
-        "Flat"              => BglDirectionType.Flat,
-        "FortyFiveDown"     => BglDirectionType.FortyFiveDown,
-        "SingleDown"        => BglDirectionType.SingleDown,
-        "DoubleDown"        => BglDirectionType.DoubleDown,
-        "NOT COMPUTABLE"    => BglDirectionType.NotComputable,
-        "RATE OUT OF RANGE" => BglDirectionType.RateOutOfRange,
-        _                   => throw new ArgumentOutOfRangeException(nameof(direction))
-    };
-    #pragma warning restore format
+    private static BglDirectionType DirectionToDirectionType(string direction)
+        => direction switch
+        {
+            #pragma warning disable format
+            "NONE"              => BglDirectionType.None,
+            "DoubleUp"          => BglDirectionType.DoubleUp,
+            "SingleUp"          => BglDirectionType.SingleUp,
+            "FortyFiveUp"       => BglDirectionType.FortyFiveUp,
+            "Flat"              => BglDirectionType.Flat,
+            "FortyFiveDown"     => BglDirectionType.FortyFiveDown,
+            "SingleDown"        => BglDirectionType.SingleDown,
+            "DoubleDown"        => BglDirectionType.DoubleDown,
+            "NOT COMPUTABLE"    => BglDirectionType.NotComputable,
+            "RATE OUT OF RANGE" => BglDirectionType.RateOutOfRange,
+            _                   => throw new ArgumentOutOfRangeException(nameof(direction))
+            #pragma warning restore format
+        };
 
     protected override FrozenSet<string> KnownProperties { get; } = new HashSet<string>()
     {
