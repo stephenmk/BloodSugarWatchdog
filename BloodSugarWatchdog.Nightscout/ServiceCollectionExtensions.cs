@@ -21,7 +21,7 @@ internal static class ServiceCollectionExtensions
             .AddTransient<NightscoutHttpClient>()
             .AddTransient<BglImporter>()
             .AddTransient<TreatmentImporter>()
-            .AddTransient<IService, NightscoutService>()
+            .AddTransient<INightscoutService, NightscoutService>()
             .AddLogging();
     }
 }

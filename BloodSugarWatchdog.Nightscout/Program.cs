@@ -20,7 +20,7 @@ internal static class Program
         };
 
         using var provider = GetServiceProvider(parsedArgs.Username);
-        var service = provider.GetRequiredService<IService>();
+        var service = provider.GetRequiredService<INightscoutService>();
         await service.RunAsync(parsedArgs.MillisecondsDelay, cts.Token);
 
         return 0;

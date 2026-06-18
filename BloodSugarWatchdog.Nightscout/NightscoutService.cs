@@ -2,13 +2,18 @@ using BloodSugarWatchdog.Import;
 
 namespace BloodSugarWatchdog.Nightscout;
 
+public interface INightscoutService
+{
+    Task RunAsync(int millisecondsDelay, CancellationToken ct = default);
+}
+
 internal sealed partial class NightscoutService
 (
     NightscoutHttpClient client,
     BglImporter bglImporter,
     TreatmentImporter treatmentImporter
 )
-    : IService
+    : INightscoutService
 {
     public async Task RunAsync(int millisecondsDelay, CancellationToken ct = default)
     {
