@@ -6,12 +6,13 @@ using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import;
 
 public sealed class TreatmentImporter : Importer
 {
-    public TreatmentImporter(Context context) : base(context) { }
+    public TreatmentImporter(ILogger<TreatmentImporter> logger, Context context) : base(logger, context) { }
 
     protected override void Initialize()
     {

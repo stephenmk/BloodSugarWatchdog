@@ -5,15 +5,18 @@ using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
+using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import;
 
-public abstract class Importer
+public abstract partial class Importer
 {
+    protected readonly ILogger<Importer> _logger;
     protected readonly Context _context;
 
-    protected Importer(Context context)
+    protected Importer(ILogger<Importer> logger, Context context)
     {
+        _logger = logger;
         _context = context;
     }
 
@@ -32,17 +35,10 @@ public abstract class Importer
         {
             if (node is not JsonObject obj)
             {
-                Console.Error.WriteLine($"JsonArray contains unexpected node type `{node?.GetElementIndex()}`");
+                LogInvalidNode(node?.GetElementIndex());
                 continue;
             }
-            try
-            {
-                count += ProcessObject(obj);
-            }
-            catch
-            {
-                throw;
-            }
+            count += ProcessObject(obj);
         }
 
         _context.SaveChanges();
@@ -83,10 +79,9 @@ public abstract class Importer
             {
                 count += ProcessObject(obj);
             }
-            catch
+            catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error for key {key} in file {file}");
-                throw;
+                throw new Exception($"Error for key {key} in file {file}", ex);
             }
         }
         _context.SaveChanges();
@@ -108,4 +103,7 @@ public abstract class Importer
 
     protected abstract bool ProcessObj(JsonObject obj);
     protected abstract FrozenSet<string> KnownProperties { get; }
+
+    [LoggerMessage(LogLevel.Warning, "JsonArray contains unexpected node type at index `{Index}`")]
+    partial void LogInvalidNode(int? index);
 }

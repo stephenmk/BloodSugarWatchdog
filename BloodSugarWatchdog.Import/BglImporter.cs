@@ -7,12 +7,13 @@ using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Data.Entities;
 using BloodSugarWatchdog.Data.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import;
 
 public sealed class BglImporter : Importer
 {
-    public BglImporter(Context context) : base(context) { }
+    public BglImporter(ILogger<BglImporter> logger, Context context) : base(logger, context) { }
 
     protected override void Initialize()
     {
