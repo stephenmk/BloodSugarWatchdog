@@ -27,7 +27,7 @@ internal static class Program
 
         using var provider = GetServiceProvider(parsedArgs.Username);
 
-        using var context = provider.GetRequiredService<Context>();
+        using var context = provider.GetRequiredService<BloodSugarContext>();
         context.Database.Migrate();
 
         var service = provider.GetRequiredService<INightscoutService>();

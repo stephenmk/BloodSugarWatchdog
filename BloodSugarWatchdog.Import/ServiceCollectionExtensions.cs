@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddImportServices(this IServiceCollection services, string username)
     {
         return services
-            .AddDbContext<Context>(options =>
+            .AddDbContext<BloodSugarContext>(options =>
             {
                 options.UseSqlite(ApplicationPaths.GetSqliteConnectionString(username));
                 // Disable EntityFramework logging

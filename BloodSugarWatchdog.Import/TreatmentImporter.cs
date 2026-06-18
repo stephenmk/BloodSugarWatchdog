@@ -12,7 +12,7 @@ namespace BloodSugarWatchdog.Import;
 
 public sealed class TreatmentImporter : Importer
 {
-    public TreatmentImporter(ILogger<TreatmentImporter> logger, Context context) : base(logger, context) { }
+    public TreatmentImporter(ILogger<TreatmentImporter> logger, BloodSugarContext context) : base(logger, context) { }
 
     protected override void Initialize()
     {
@@ -47,7 +47,7 @@ public sealed class TreatmentImporter : Importer
         return true;
     }
 
-    private static int GetDeviceId(Context context, JsonObject obj)
+    private static int GetDeviceId(BloodSugarContext context, JsonObject obj)
     {
         var name = (string?)obj["enteredBy"];
 

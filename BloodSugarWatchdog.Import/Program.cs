@@ -20,7 +20,7 @@ internal static class Program
 
         using var provider = GetServiceProvider(parsedArgs.Username);
 
-        using var context = provider.GetRequiredService<Context>();
+        using var context = provider.GetRequiredService<BloodSugarContext>();
         context.Database.Migrate();
 
         int count = 0;

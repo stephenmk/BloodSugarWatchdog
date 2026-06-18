@@ -13,7 +13,7 @@ namespace BloodSugarWatchdog.Import;
 
 public sealed class BglImporter : Importer
 {
-    public BglImporter(ILogger<BglImporter> logger, Context context) : base(logger, context) { }
+    public BglImporter(ILogger<BglImporter> logger, BloodSugarContext context) : base(logger, context) { }
 
     protected override void Initialize()
     {

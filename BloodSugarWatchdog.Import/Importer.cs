@@ -12,9 +12,9 @@ namespace BloodSugarWatchdog.Import;
 public abstract partial class Importer
 {
     protected readonly ILogger<Importer> _logger;
-    protected readonly Context _context;
+    protected readonly BloodSugarContext _context;
 
-    protected Importer(ILogger<Importer> logger, Context context)
+    protected Importer(ILogger<Importer> logger, BloodSugarContext context)
     {
         _logger = logger;
         _context = context;
