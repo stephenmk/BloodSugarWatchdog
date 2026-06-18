@@ -78,6 +78,7 @@ internal static class Program
         serviceCollection.AddNightscoutService(options =>
         {
             options.Username = username;
+            options.ClientUserAgent = "BloodSugarWatchdog/1.0";
         });
 
         serviceCollection.AddLogging(static builder =>
