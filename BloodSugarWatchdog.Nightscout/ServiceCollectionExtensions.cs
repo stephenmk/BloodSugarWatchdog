@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Stephen Kraus
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using BloodSugarWatchdog.Import;
 using Microsoft.Extensions.DependencyInjection;
 

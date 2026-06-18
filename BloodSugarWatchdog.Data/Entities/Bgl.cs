@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Stephen Kraus
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using System.ComponentModel.DataAnnotations.Schema;
 using BloodSugarWatchdog.Data.Enums;
 

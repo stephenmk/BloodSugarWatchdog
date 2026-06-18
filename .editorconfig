@@ -22,10 +22,6 @@ dotnet_diagnostic.IDE0305.severity = none
 # RCS1160: Abstract type should not have public constructors
 dotnet_diagnostic.RCS1160.severity = warning
 
-[Source/**.cs]
-# Note: had to replace semicolon with a comma.
-# https://github.com/dotnet/roslyn/issues/44596
-file_header_template = Copyright (c) 2026 Stephen Kraus\nSPDX-License-Identifier: GPL-3.0-or-later
-
 # IDE0073: Require file header
+file_header_template = Copyright (c) 2026 Stephen Kraus\nSPDX-License-Identifier: GPL-3.0-or-later
 dotnet_diagnostic.IDE0073.severity = warning
