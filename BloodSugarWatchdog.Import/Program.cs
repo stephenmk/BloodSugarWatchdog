@@ -1,5 +1,8 @@
 ﻿using System.CommandLine;
 using BloodSugarWatchdog.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import;
 
@@ -12,19 +15,21 @@ internal static class Program
         if (parsedArgs is null)
             return 1;
 
-        using var context = new Context(parsedArgs.Username);
-        context.Database.EnsureCreated();
+        using var provider = GetServiceProvider(parsedArgs.Username);
+
+        using var context = provider.GetRequiredService<Context>();
+        context.Database.Migrate();
 
         int count = 0;
 
         switch (parsedArgs.DataType)
         {
             case DataType.Bgl:
-                var bglImporter = new BglImporter(context);
+                var bglImporter = provider.GetRequiredService<BglImporter>();
                 count = bglImporter.Import(parsedArgs.Directory);
                 break;
             case DataType.Treatment:
-                var treatmentImporter = new TreatmentImporter(context);
+                var treatmentImporter = provider.GetRequiredService<TreatmentImporter>();
                 count = treatmentImporter.Import(parsedArgs.Directory);
                 break;
         }
@@ -78,5 +83,22 @@ internal static class Program
         }
 
         return new(username, dir, type);
+    }
+
+    private static ServiceProvider GetServiceProvider(string username)
+    {
+        var serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddImportServices(username);
+
+        serviceCollection.AddLogging(static builder =>
+            builder.AddSimpleConsole(static options =>
+            {
+                options.IncludeScopes = true;
+                options.SingleLine = true;
+                options.TimestampFormat = "HH:mm:ss ";
+            }));
+
+        return serviceCollection.BuildServiceProvider();
     }
 }
