@@ -39,7 +39,12 @@ internal static class Program
         Treatment,
     }
 
-    private sealed record ParsedArgs(string Username, DirectoryInfo Directory, DataType DataType);
+    private sealed record ParsedArgs
+    (
+        string Username,
+        DirectoryInfo Directory,
+        DataType DataType
+    );
 
     private static ParsedArgs? ParseArgs(string[] args)
     {
