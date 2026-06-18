@@ -2,6 +2,7 @@ using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Import;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Nightscout;
 
@@ -16,6 +17,8 @@ internal static class ServiceCollectionExtensions
             .AddDbContext<Context>(options =>
             {
                 options.UseSqlite(ApplicationPaths.GetSqliteConnectionString(serviceOptions.Username));
+                // Disable EntityFramework logging
+                options.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddFilter(_ => false); }));
             })
             .AddTransient(_ => serviceOptions)
             .AddTransient<NightscoutHttpClient>()
