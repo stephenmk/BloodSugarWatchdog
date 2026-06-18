@@ -49,7 +49,7 @@ internal static class Program
     private static ParsedArgs? ParseArgs(string[] args)
     {
         var usernameOption = new Option<string>("--user") { Required = true };
-        var pollOption = new Option<int>("--poll") { Required = true };
+        var pollOption = new Option<int?>("--poll");
 
         var rootCommand = new RootCommand("Continuously fetch data from Nightscout API")
         {
@@ -66,7 +66,7 @@ internal static class Program
             return null;
 
         var username = parseResult.GetRequiredValue(usernameOption);
-        var pollRate = parseResult.GetRequiredValue(pollOption);
+        var pollRate = parseResult.GetValue(pollOption) ?? 5;
 
         return new(username, pollRate * 60 * 1000);
     }
