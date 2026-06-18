@@ -8,5 +8,5 @@ public sealed class BglDevice
     public required int Id { get; init; }
     public required string Name { get; init; }
 
-    public List<BglEntry> Bgls { get; init; } = [];
+    public List<BglEntry> Entries { get; init; } = [];
 }
