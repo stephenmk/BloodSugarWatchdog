@@ -12,5 +12,5 @@ public sealed class BglDirection
     public required BglDirectionType Type { get; init; }
     public required string Name { get; init; }
 
-    public List<Bgl> Bgls { get; init; } = [];
+    public List<BglEntry> Bgls { get; init; } = [];
 }

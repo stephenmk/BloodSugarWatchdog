@@ -42,10 +42,10 @@ public sealed class BglImporter : Importer
     {
         var id = (string)obj["_id"]!;
 
-        if (_context.Bgls.Any(bgl => bgl.Id == id))
+        if (_context.BglEntries.Any(bgl => bgl.Id == id))
             return false;
 
-        _context.Bgls.Add(new Bgl
+        _context.BglEntries.Add(new BglEntry
         {
             Id = id,
             Type = (string)obj["type"]!,

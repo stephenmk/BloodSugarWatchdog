@@ -6,7 +6,7 @@ using BloodSugarWatchdog.Data.Enums;
 
 namespace BloodSugarWatchdog.Data.Entities;
 
-public sealed class Bgl
+public sealed class BglEntry
 {
     public required string Id { get; init; }
     public required string Type { get; init; }
