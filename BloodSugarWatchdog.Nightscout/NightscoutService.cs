@@ -1,4 +1,5 @@
 using BloodSugarWatchdog.Import;
+using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Nightscout;
 
@@ -9,6 +10,7 @@ public interface INightscoutService
 
 internal sealed partial class NightscoutService
 (
+    ILogger<NightscoutService> logger,
     NightscoutHttpClient client,
     BglImporter bglImporter,
     TreatmentImporter treatmentImporter
@@ -25,18 +27,18 @@ internal sealed partial class NightscoutService
             var treatments = await client.GetTreatmentsAsync(ct) ?? [];
 
             var bglCount = bglImporter.Import(entries);
-            Console.Error.WriteLine($"{DateTime.Now:G}\tDownloaded {bglCount:N0} new BGL entries.");
+            LogNewEntries(bglCount);
 
             var treatmentCount = treatmentImporter.Import(treatments);
-            Console.Error.WriteLine($"{DateTime.Now:G}\tDownloaded {treatmentCount:N0} new treatment records.");
+            LogNewTreatments(treatmentCount);
 
             await delayTask;
         }
     }
 
-    // [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new BGL entries.")]
-    // partial void LogNewEntries(int count);
+    [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new BGL entries.")]
+    partial void LogNewEntries(int count);
 
-    // [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new treatment records.")]
-    // partial void LogNewTreatments(int count);
+    [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new treatment records.")]
+    partial void LogNewTreatments(int count);
 }

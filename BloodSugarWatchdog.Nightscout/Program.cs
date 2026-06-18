@@ -1,5 +1,8 @@
 ﻿using System.CommandLine;
+using BloodSugarWatchdog.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Nightscout;
 
@@ -20,6 +23,10 @@ internal static class Program
         };
 
         using var provider = GetServiceProvider(parsedArgs.Username);
+
+        using var context = provider.GetRequiredService<Context>();
+        context.Database.Migrate();
+
         var service = provider.GetRequiredService<INightscoutService>();
         await service.RunAsync(parsedArgs.MillisecondsDelay, cts.Token);
 
@@ -56,10 +63,19 @@ internal static class Program
     private static ServiceProvider GetServiceProvider(string username)
     {
         var serviceCollection = new ServiceCollection();
+
         serviceCollection.AddNightscoutService(options =>
         {
             options.Username = username;
         });
+
+        serviceCollection.AddLogging(static builder =>
+            builder.AddSimpleConsole(static options =>
+            {
+                options.IncludeScopes = true;
+                options.SingleLine = true;
+                options.TimestampFormat = "HH:mm:ss ";
+            }));
 
         return serviceCollection.BuildServiceProvider();
     }
