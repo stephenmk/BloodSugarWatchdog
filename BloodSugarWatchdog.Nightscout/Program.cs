@@ -31,7 +31,15 @@ internal static class Program
         context.Database.Migrate();
 
         var service = provider.GetRequiredService<INightscoutService>();
-        await service.RunAsync(parsedArgs.MillisecondsDelay, cts.Token);
+
+        try
+        {
+            await service.RunAsync(parsedArgs.MillisecondsDelay, cts.Token);
+        }
+        catch (TaskCanceledException ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+        }
 
         return 0;
     }
