@@ -2,7 +2,7 @@ using static System.Environment;
 
 namespace BloodSugarWatchdog.Data;
 
-public static class EnvironmentPaths
+internal static class EnvironmentPaths
 {
     private static string LocalUserPath
         => GetFolderPath(SpecialFolder.UserProfile);

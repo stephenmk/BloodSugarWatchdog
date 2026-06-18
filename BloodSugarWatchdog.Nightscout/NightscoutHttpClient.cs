@@ -3,22 +3,22 @@ using System.Text.Json.Nodes;
 
 namespace BloodSugarWatchdog.Nightscout;
 
-internal sealed class NightscoutClient : IDisposable
+internal sealed class NightscoutHttpClient : IDisposable
 {
     private readonly string _entriesUrl;
     private readonly string _treatmentsUrl;
     private readonly HttpClient _httpClient;
     private bool _disposedValue;
 
-    public NightscoutClient(string username)
+    public NightscoutHttpClient(NightscoutOptions options)
     {
-        var domain = $"https://{username}.my.nightscoutpro.com";
+        var domain = $"https://{options.Username}.my.nightscoutpro.com";
 
         _entriesUrl = $"{domain}/api/v1/entries.json";
         _treatmentsUrl = $"{domain}/api/v1/treatments.json";
 
         _httpClient = new();
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", "BloodSugarWatchdog/1.0");
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", options.ClientUserAgent);
     }
 
     public Task<JsonArray?> GetEntriesAsync(CancellationToken ct = default)

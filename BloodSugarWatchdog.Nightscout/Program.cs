@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BloodSugarWatchdog.Nightscout;
 
@@ -11,9 +12,6 @@ internal static class Program
         if (parsedArgs is null)
             return 1;
 
-        var serviceProvider = new ServiceProvider();
-        var service = serviceProvider.GetService(parsedArgs.Username);
-
         using var cts = new CancellationTokenSource();
         Console.CancelKeyPress += (_, e) =>
         {
@@ -21,6 +19,8 @@ internal static class Program
             cts.Cancel();
         };
 
+        using var provider = GetServiceProvider(parsedArgs.Username);
+        var service = provider.GetRequiredService<IService>();
         await service.RunAsync(parsedArgs.MillisecondsDelay, cts.Token);
 
         return 0;
@@ -51,5 +51,16 @@ internal static class Program
         var pollRate = parseResult.GetRequiredValue(pollOption);
 
         return new(username, pollRate * 60 * 1000);
+    }
+
+    private static ServiceProvider GetServiceProvider(string username)
+    {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddNightscoutService(options =>
+        {
+            options.Username = username;
+        });
+
+        return serviceCollection.BuildServiceProvider();
     }
 }

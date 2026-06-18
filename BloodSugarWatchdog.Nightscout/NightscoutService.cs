@@ -2,9 +2,9 @@ using BloodSugarWatchdog.Import;
 
 namespace BloodSugarWatchdog.Nightscout;
 
-internal sealed partial class Service
+internal sealed partial class NightscoutService
 (
-    NightscoutClient client,
+    NightscoutHttpClient client,
     BglImporter bglImporter,
     TreatmentImporter treatmentImporter
 )
