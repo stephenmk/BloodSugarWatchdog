@@ -1,0 +1,31 @@
+root = true
+
+[*.cs]
+indent_size = 4
+charset = utf-8
+
+csharp_style_prefer_primary_constructors = false
+
+dotnet_separate_import_directive_groups = false
+dotnet_sort_system_directives_first = true
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+
+# IDE0005: Remove unnecessary using directives
+dotnet_diagnostic.IDE0005.severity = warning
+
+# IDE0036: Enforce a modifier sort order
+dotnet_diagnostic.IDE0036.severity = warning
+
+# IDE0305: Use collection expression for fluent
+dotnet_diagnostic.IDE0305.severity = none
+
+# RCS1160: Abstract type should not have public constructors
+dotnet_diagnostic.RCS1160.severity = warning
+
+[Source/**.cs]
+# Note: had to replace semicolon with a comma.
+# https://github.com/dotnet/roslyn/issues/44596
+file_header_template = Copyright (c) 2026 Stephen Kraus\nSPDX-License-Identifier: GPL-3.0-or-later
+
+# IDE0073: Require file header
+dotnet_diagnostic.IDE0073.severity = warning

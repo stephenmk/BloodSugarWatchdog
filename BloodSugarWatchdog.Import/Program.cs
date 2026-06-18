@@ -1,4 +1,4 @@
-﻿using System.CommandLine;
+using System.CommandLine;
 using BloodSugarWatchdog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using BloodSugarWatchdog.Data.Enums;
 
 namespace BloodSugarWatchdog.Data.Entities;
