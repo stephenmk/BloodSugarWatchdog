@@ -8,46 +8,33 @@ namespace BloodSugarWatchdog.Nightscout;
 
 internal sealed class NightscoutHttpClient : IDisposable
 {
-    private readonly string _entriesUrl;
-    private readonly string _treatmentsUrl;
     private readonly HttpClient _httpClient;
     private bool _disposedValue;
 
     public NightscoutHttpClient(NightscoutOptions options)
     {
-        var domain = $"https://{options.Username}.my.nightscoutpro.com";
-
-        _entriesUrl = $"{domain}/api/v1/entries.json";
-        _treatmentsUrl = $"{domain}/api/v1/treatments.json";
-
-        _httpClient = new();
+        _httpClient = new()
+        {
+            BaseAddress = new Uri($"https://{options.Username}.my.nightscoutpro.com/"),
+        };
         _httpClient.DefaultRequestHeaders.Add("User-Agent", options.ClientUserAgent);
     }
 
     public Task<JsonArray?> GetEntriesAsync(CancellationToken ct = default)
-        => GetContentAsync(_entriesUrl, ct);
+        => GetContentAsync("api/v1/entries.json", ct);
 
     public Task<JsonArray?> GetTreatmentsAsync(CancellationToken ct = default)
-        => GetContentAsync(_treatmentsUrl, ct);
+        => GetContentAsync("api/v1/treatments.json", ct);
 
-    private async Task<JsonArray?> GetContentAsync(string url, CancellationToken ct)
-    {
-        using var response = await _httpClient.GetAsync(url, ct);
-        response.EnsureSuccessStatusCode();
-
-        var content = await response.Content.ReadFromJsonAsync<JsonArray>(ct);
-
-        return content;
-    }
+    private Task<JsonArray?> GetContentAsync(string requestUri, CancellationToken ct)
+        => _httpClient.GetFromJsonAsync<JsonArray>(requestUri, ct);
 
     private void Dispose(bool disposing)
     {
         if (!_disposedValue)
         {
             if (disposing)
-            {
                 _httpClient.Dispose();
-            }
             _disposedValue = true;
         }
     }
