@@ -44,7 +44,11 @@ internal static class Program
         return 0;
     }
 
-    private sealed record ParsedArgs(string Username, int MillisecondsDelay);
+    private sealed record ParsedArgs
+    (
+        string Username,
+        int MillisecondsDelay
+    );
 
     private static ParsedArgs? ParseArgs(string[] args)
     {
