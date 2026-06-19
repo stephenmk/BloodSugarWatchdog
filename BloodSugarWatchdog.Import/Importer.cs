@@ -5,6 +5,7 @@ using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
+using BloodSugarWatchdog.Data.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import;
@@ -75,14 +76,7 @@ public abstract partial class Importer
         int count = 0;
         foreach (var (key, obj) in data)
         {
-            try
-            {
-                count += ProcessObject(obj);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error for key {key} in file {file}", ex);
-            }
+            count += ProcessObject(obj);
         }
         _context.SaveChanges();
         return count;
@@ -91,14 +85,44 @@ public abstract partial class Importer
     private int ProcessObject(JsonObject obj)
     {
         int count = 0;
-        foreach (var (property, _) in obj)
+        try
         {
-            if (!KnownProperties.Contains(property))
-                throw new Exception($"Unknown property name `{property}`");
+            foreach (var (property, _) in obj)
+            {
+                if (!KnownProperties.Contains(property))
+                    throw new Exception($"Unknown property name `{property}`");
+            }
+            if (ProcessObj(obj))
+                count++;
         }
-        if (ProcessObj(obj))
-            count++;
+        catch (Exception ex)
+        {
+            LogInvalidObject(ex.Message);
+            AddErrorRecord(obj, ex);
+        }
         return count;
+    }
+
+    private void AddErrorRecord(JsonObject obj, Exception ex)
+    {
+        var uniqueIdentifier = obj.TryGetPropertyValue("uuid", out var uuid) && uuid is not null
+            ? uuid.ToString()
+            : obj.TryGetPropertyValue("_id", out var id) && id is not null
+            ? id.ToString()
+            : null;
+
+        if (uniqueIdentifier is not null && _context.ErrorRecords.Any(r => r.UniqueIdentifier == uniqueIdentifier))
+            return;
+
+        _context.ErrorRecords.Add(new ErrorRecord
+        {
+            Id = default,
+            CreatedAt = DateTime.UtcNow,
+            UniqueIdentifier = uniqueIdentifier,
+            Message = ex.Message,
+            StackTrace = ex.StackTrace,
+            RecordJson = JsonSerializer.SerializeToUtf8Bytes(obj),
+        });
     }
 
     protected abstract bool ProcessObj(JsonObject obj);
@@ -106,4 +130,7 @@ public abstract partial class Importer
 
     [LoggerMessage(LogLevel.Warning, "JsonArray contains unexpected node type at index `{Index}`")]
     partial void LogInvalidNode(int? index);
+
+    [LoggerMessage(LogLevel.Warning, "Exception occurred while processing object: `{Message}`")]
+    partial void LogInvalidObject(string message);
 }

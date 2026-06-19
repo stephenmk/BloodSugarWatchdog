@@ -14,4 +14,6 @@ public sealed class BloodSugarContext(DbContextOptions<BloodSugarContext> option
 
     public DbSet<Treatment> Treatments { get; set; } = null!;
     public DbSet<TreatmentDevice> TreatmentDevices { get; set; } = null!;
+
+    public DbSet<ErrorRecord> ErrorRecords { get; set; } = null!;
 }
