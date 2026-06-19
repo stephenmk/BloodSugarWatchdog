@@ -11,10 +11,13 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import.Importers;
 
-public sealed class BglImporter : Importer
+public sealed class BglImporter
+(
+    ILogger<BglImporter> logger,
+    BloodSugarContext context
+)
+    : Importer(logger, context)
 {
-    public BglImporter(ILogger<BglImporter> logger, BloodSugarContext context) : base(logger, context) { }
-
     protected override void Initialize()
     {
         _context.BglDevices.Load();
