@@ -24,7 +24,7 @@ public abstract partial class Importer
     public int Import(DirectoryInfo directory)
     {
         Initialize();
-        return ProcessDirectory(directory);
+        return ImportDirectory(directory);
     }
 
     public int Import(JsonArray array)
@@ -39,7 +39,7 @@ public abstract partial class Importer
                 LogInvalidNode(node?.GetElementIndex());
                 continue;
             }
-            count += ProcessObject(obj);
+            count += ImportObject(obj);
         }
 
         _context.SaveChanges();
@@ -48,24 +48,24 @@ public abstract partial class Importer
 
     protected abstract void Initialize();
 
-    private int ProcessDirectory(DirectoryInfo directory)
+    private int ImportDirectory(DirectoryInfo directory)
     {
         int count = 0;
         foreach (var info in directory.GetFileSystemInfos())
         {
             if (info is FileInfo file && file.FullName.EndsWith(".json"))
             {
-                count += ProcessFile(file);
+                count += ImportFile(file);
             }
             else if (info is DirectoryInfo subdir)
             {
-                count += ProcessDirectory(subdir);
+                count += ImportDirectory(subdir);
             }
         }
         return count;
     }
 
-    private int ProcessFile(FileInfo file)
+    private int ImportFile(FileInfo file)
     {
         Console.Error.WriteLine(file.FullName);
         Dictionary<string, JsonObject> data;
@@ -76,13 +76,13 @@ public abstract partial class Importer
         int count = 0;
         foreach (var (key, obj) in data)
         {
-            count += ProcessObject(obj);
+            count += ImportObject(obj);
         }
         _context.SaveChanges();
         return count;
     }
 
-    private int ProcessObject(JsonObject obj)
+    private int ImportObject(JsonObject obj)
     {
         int count = 0;
         try
@@ -92,7 +92,7 @@ public abstract partial class Importer
                 if (!KnownProperties.Contains(property))
                     throw new Exception($"Unknown property name `{property}`");
             }
-            if (ProcessObj(obj))
+            if (AddObject(obj))
                 count++;
         }
         catch (Exception ex)
@@ -125,7 +125,7 @@ public abstract partial class Importer
         });
     }
 
-    protected abstract bool ProcessObj(JsonObject obj);
+    protected abstract bool AddObject(JsonObject obj);
     protected abstract FrozenSet<string> KnownProperties { get; }
 
     [LoggerMessage(LogLevel.Warning, "JsonArray contains unexpected node type at index `{Index}`")]

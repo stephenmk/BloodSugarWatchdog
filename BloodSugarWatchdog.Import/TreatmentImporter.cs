@@ -19,7 +19,7 @@ public sealed class TreatmentImporter : Importer
         _context.TreatmentDevices.Load();
     }
 
-    protected override bool ProcessObj(JsonObject obj)
+    protected override bool AddObject(JsonObject obj)
     {
         var id = (string)obj["_id"]!;
 

@@ -38,7 +38,7 @@ public sealed class BglImporter : Importer
         }
     }
 
-    protected override bool ProcessObj(JsonObject obj)
+    protected override bool AddObject(JsonObject obj)
     {
         var id = (string)obj["_id"]!;
 
