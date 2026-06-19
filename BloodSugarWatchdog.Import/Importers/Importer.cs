@@ -8,7 +8,7 @@ using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Data.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import;
+namespace BloodSugarWatchdog.Import.Importers;
 
 public abstract partial class Importer
 {

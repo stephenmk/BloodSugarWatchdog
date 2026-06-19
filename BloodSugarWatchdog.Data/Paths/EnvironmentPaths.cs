@@ -3,7 +3,7 @@
 
 using static System.Environment;
 
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarWatchdog.Data.Paths;
 
 internal static class EnvironmentPaths
 {

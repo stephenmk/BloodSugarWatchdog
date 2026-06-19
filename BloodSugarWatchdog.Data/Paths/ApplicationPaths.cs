@@ -3,7 +3,7 @@
 
 using Microsoft.Data.Sqlite;
 
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarWatchdog.Data.Paths;
 
 public static class ApplicationPaths
 {

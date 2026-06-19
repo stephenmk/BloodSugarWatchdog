@@ -9,7 +9,7 @@ using BloodSugarWatchdog.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import;
+namespace BloodSugarWatchdog.Import.Importers;
 
 public sealed class BglImporter : Importer
 {
