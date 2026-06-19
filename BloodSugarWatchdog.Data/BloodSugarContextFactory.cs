@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace BloodSugarWatchdog.Data;
 
+/// <summary>
+/// This class is only needed to produce new migration files.
+/// E.g. `dotnet ef migrations add NewMigration -- MyUserName`
+/// </summary>
 public sealed class BloodSugarContextFactory : IDesignTimeDbContextFactory<BloodSugarContext>
 {
     public BloodSugarContext CreateDbContext(string[] args)
