@@ -33,7 +33,7 @@ public sealed class TreatmentImporter
         {
             Id = id,
             EventType = (string)obj["eventType"]!,
-            DeviceId = GetDeviceId(_context, obj),
+            DeviceId = GetDeviceId(obj),
             Timestamp = GetTimestamp(obj),
             UUID = (string?)obj["uuid"],
             Insulin = (double?)obj["insulin"] is double insulin
@@ -50,21 +50,21 @@ public sealed class TreatmentImporter
         return true;
     }
 
-    private static int GetDeviceId(BloodSugarContext context, JsonObject obj)
+    private int GetDeviceId(JsonObject obj)
     {
         var name = (string?)obj["enteredBy"];
 
-        if (!context.TreatmentDevices.Any(d => d.Name == name))
+        if (!_context.TreatmentDevices.Any(d => d.Name == name))
         {
-            context.TreatmentDevices.Add(new TreatmentDevice
+            _context.TreatmentDevices.Add(new TreatmentDevice
             {
                 Id = default,
                 Name = name,
             });
-            context.SaveChanges();
+            _context.SaveChanges();
         }
 
-        return context.TreatmentDevices
+        return _context.TreatmentDevices
             .Where(d => d.Name == name)
             .First()
             .Id;
