@@ -30,7 +30,7 @@ internal static class Program
         using var context = provider.GetRequiredService<BloodSugarContext>();
         context.Database.Migrate();
 
-        var service = provider.GetRequiredService<INightscoutService>();
+        var service = provider.GetRequiredService<NightscoutService>();
 
         try
         {

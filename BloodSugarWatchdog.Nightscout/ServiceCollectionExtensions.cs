@@ -18,6 +18,6 @@ internal static class ServiceCollectionExtensions
             .AddImportServices(serviceOptions.Username)
             .AddTransient(_ => serviceOptions)
             .AddTransient<NightscoutHttpClient>()
-            .AddTransient<INightscoutService, NightscoutService>();
+            .AddTransient<NightscoutService>();
     }
 }

@@ -6,11 +6,6 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Nightscout;
 
-public interface INightscoutService
-{
-    Task RunAsync(int millisecondsDelay, CancellationToken ct = default);
-}
-
 internal sealed partial class NightscoutService
 (
     ILogger<NightscoutService> logger,
@@ -18,7 +13,6 @@ internal sealed partial class NightscoutService
     BglImporter bglImporter,
     TreatmentImporter treatmentImporter
 )
-    : INightscoutService
 {
     public async Task RunAsync(int millisecondsDelay, CancellationToken ct = default)
     {
