@@ -22,6 +22,8 @@ public sealed class BglEntry
     public required DateTime SysTime { get; init; }
     public required int UtcOffset { get; init; }
 
+    public double MillimolePerLiter => Sgv / 18.018;
+
     [ForeignKey(nameof(DirectionType))]
     public BglDirection Direction { get; init; } = null!;
 

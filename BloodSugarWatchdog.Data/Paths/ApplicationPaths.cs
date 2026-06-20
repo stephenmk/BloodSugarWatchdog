@@ -7,9 +7,22 @@ namespace BloodSugarWatchdog.Data.Paths;
 
 public static class ApplicationPaths
 {
+    private const string AppName = "BloodSugarWatchdog";
+
+    public static string GetAppCacheDirPath(string username)
+    {
+        var rootPath = EnvironmentPaths.LocalCachePath;
+        var path = Path.Join(rootPath, AppName, username);
+
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        return path;
+    }
+
     public static string GetSqliteConnectionString(string username)
     {
-        var dirPath = Path.Join(EnvironmentPaths.LocalDataPath, "BloodSugarWatchdog", username);
+        var dirPath = Path.Join(EnvironmentPaths.LocalDataPath, AppName, username);
 
         if (!Directory.Exists(dirPath))
             Directory.CreateDirectory(dirPath);
