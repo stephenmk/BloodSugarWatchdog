@@ -14,7 +14,7 @@ internal static class Program
         var username = args[0];
 
         using var provider = GetServiceProvider(username);
-        var plotter = provider.GetRequiredService<StatusPlotter>();
+        var plotter = provider.GetRequiredService<IStatusPlotter>();
 
         var path = Path.Join(ApplicationPaths.GetAppCacheDirPath(username), "plot.png");
         plotter.RenderToPath(path);

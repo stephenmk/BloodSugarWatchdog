@@ -9,7 +9,12 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Report;
 
-internal static class ServiceCollectionExtensions
+public interface IStatusPlotter
+{
+    void RenderToPath(string path);
+}
+
+public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddReportService(this IServiceCollection services, Action<PlotOptions> configure)
     {
@@ -26,6 +31,6 @@ internal static class ServiceCollectionExtensions
 
             .AddLogging()
             .AddTransient(_ => serviceOptions)
-            .AddTransient<StatusPlotter>();
+            .AddTransient<IStatusPlotter, StatusPlotter>();
     }
 }

@@ -13,6 +13,7 @@ internal sealed partial class StatusPlotter
     BloodSugarContext context,
     PlotOptions options
 )
+    : IStatusPlotter
 {
     private const double hours = 3.0;
 
