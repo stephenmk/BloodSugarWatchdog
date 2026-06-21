@@ -20,6 +20,7 @@ internal sealed partial class StatusPlotter
     {
         using var plot = InitializePlot();
 
+        AddLabels(plot);
         AddBglData(plot);
         AddBolusData(plot);
 
@@ -39,14 +40,17 @@ internal sealed partial class StatusPlotter
         plot.Add.HorizontalLine(options.LowBgl, width, color, LinePattern.Dotted);
         plot.Add.HorizontalLine(options.VeryLowBgl, width, color, LinePattern.Dashed);
 
-        plot.Title($"{DateTimeOffset.Now:h:mm tt (d MMM yyyy)}");
-        plot.Axes.Bottom.Label.Text = "hours";
-        plot.Axes.Left.Label.Text = "mmol / L";
-
         plot.Axes.Left.TickGenerator =
             new ScottPlot.TickGenerators.NumericFixedInterval(2);
 
         return plot;
+    }
+
+    private void AddLabels(Plot plot)
+    {
+        plot.Title($"{DateTimeOffset.Now:h:mm tt (d MMM yyyy)}");
+        plot.Axes.Bottom.Label.Text = "hours";
+        plot.Axes.Left.Label.Text = "mmol / L";
     }
 
     private void AddBglData(Plot plot)
