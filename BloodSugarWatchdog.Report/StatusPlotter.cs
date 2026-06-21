@@ -103,7 +103,7 @@ internal sealed partial class StatusPlotter
 
     private void AddBolusData(Plot plot)
     {
-        var start = DateTime.UtcNow.AddHours(-hours - 0.25);
+        var start = DateTime.UtcNow.AddHours(-(hours + 0.25));
 
         var data = context.Treatments
             .Where(e => e.SysTime >= start)
@@ -116,7 +116,12 @@ internal sealed partial class StatusPlotter
 
         foreach (var datum in data)
         {
-            var line = plot.Add.VerticalLine(datum.X, 1, Color.FromColor(System.Drawing.Color.Blue), LinePattern.Solid);
+            var line = plot.Add.VerticalLine(
+                datum.X,
+                width: 1,
+                Color.FromColor(System.Drawing.Color.Blue),
+                LinePattern.Solid);
+
             line.LabelText = $"{datum.Insulin}U";
             line.LabelOppositeAxis = true;
             line.LabelRotation = -90;
