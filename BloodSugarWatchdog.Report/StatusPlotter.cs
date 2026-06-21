@@ -130,6 +130,8 @@ internal sealed partial class StatusPlotter
             line.LabelFontSize = 10;
             line.LabelOffsetY = GetBolusLabelOffsetY(plot, datum.X);
             line.LabelOffsetX = 2;
+
+            plot.MoveToBottom(line);
         }
     }
 
