@@ -21,7 +21,7 @@ internal sealed partial class DayPlotter : Plotter, IDayPlotter
 
         var axis = plot.Axes.DateTimeTicksBottom();
         var tickGen = (ScottPlot.TickGenerators.DateTimeAutomatic)axis.TickGenerator;
-        tickGen.LabelFormatter = static dt => dt.ToString("h:mm tt");
+        tickGen.LabelFormatter = static dt => dt.ToString("h tt");
 
         plot.Axes.Left.TickGenerator =
             new ScottPlot.TickGenerators.NumericFixedInterval(2);
@@ -41,7 +41,7 @@ internal sealed partial class DayPlotter : Plotter, IDayPlotter
         var zoneYesterday = zoneNow.AddDays(-1);
 
         plot.Title($"{zoneYesterday:D}");
-        plot.Axes.Bottom.Label.Text = "time";
+        plot.Axes.Bottom.Label.Text = zone.StandardName.ToLower();
         plot.Axes.Left.Label.Text = "mmol / L";
     }
 
@@ -78,7 +78,11 @@ internal sealed partial class DayPlotter : Plotter, IDayPlotter
             plot.Add.Marker(x.ToOADate(), y, MarkerShape.FilledCircle, size: 10, color);
         }
 
-        // plot.Axes.SetLimitsX(-(Hours + 0.1), 0.1);
+        var now = TimeZoneInfo.ConvertTime(DateTime.Now, zone);
+        var leftLimit = now.AddHours(-(Hours + 0.1));
+        var rightLimit = now.AddHours(0.1);
+
+        plot.Axes.SetLimitsX(leftLimit.ToOADate(), rightLimit.ToOADate());
         plot.Axes.SetLimitsY(minimumY, maximumY);
     }
 
@@ -114,7 +118,7 @@ internal sealed partial class DayPlotter : Plotter, IDayPlotter
             line.LabelBackgroundColor = Colors.Transparent;
             line.LabelFontColor = Color.FromColor(System.Drawing.Color.Blue);
             line.LabelFontSize = 14;
-            line.LabelOffsetY = GetBolusLabelOffsetY(plot, datum.SysTime.ToOADate());
+            line.LabelOffsetY = GetBolusLabelOffsetY(plot, x.ToOADate());
             line.LabelOffsetX = 2;
 
             plot.MoveToBottom(line);
