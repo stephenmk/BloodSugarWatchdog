@@ -49,7 +49,15 @@ internal sealed partial class StatusPlotter
 
     private void AddLabels(Plot plot)
     {
-        plot.Title($"{DateTimeOffset.Now:h:mm tt (d MMM yyyy)}");
+        if (!TimeZoneInfo.TryFindSystemTimeZoneById(options.TimeZone, out var zone))
+        {
+            zone = TimeZoneInfo.Utc;
+            LogUnknownTimezone(options.TimeZone);
+        }
+
+        var zoneNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, zone);
+
+        plot.Title($"{zoneNow:h:mmtt} {zone.StandardName} {zoneNow:(d MMM yyyy)}");
         plot.Axes.Bottom.Label.Text = "hours";
         plot.Axes.Left.Label.Text = "mmol / L";
     }
@@ -127,4 +135,7 @@ internal sealed partial class StatusPlotter
 
     [LoggerMessage(LogLevel.Information, "Plot successfully saved to {Path}.")]
     partial void LogPlotSaved(string path);
+
+    [LoggerMessage(LogLevel.Warning, "Unknown timezone {Timezone}.")]
+    partial void LogUnknownTimezone(string timezone);
 }

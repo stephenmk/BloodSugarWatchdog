@@ -28,7 +28,6 @@ public static class ServiceCollectionExtensions
                 // Disable EntityFramework logging
                 options.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddFilter(_ => false); }));
             })
-
             .AddLogging()
             .AddTransient(_ => serviceOptions)
             .AddTransient<IStatusPlotter, StatusPlotter>();
