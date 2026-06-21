@@ -8,15 +8,12 @@ using ScottPlot.Plottables;
 
 namespace BloodSugarWatchdog.Report;
 
-internal sealed partial class StatusPlotter
-(
-    ILogger<StatusPlotter> logger,
-    BloodSugarContext context,
-    PlotOptions options
-)
-    : IStatusPlotter
+internal sealed partial class StatusPlotter : Plotter, IStatusPlotter
 {
-    private const double hours = 3.0;
+    public StatusPlotter(ILogger<StatusPlotter> logger, BloodSugarContext context, PlotOptions options)
+        : base(logger, context, options) { }
+
+    protected override double Hours => 3.0;
 
     public void RenderToPath(string path)
     {
@@ -30,30 +27,12 @@ internal sealed partial class StatusPlotter
         LogPlotSaved(path);
     }
 
-    private Plot InitializePlot()
-    {
-        var plot = new Plot();
-
-        var color = Color.FromColor(System.Drawing.Color.Black);
-        const float width = 1;
-
-        plot.Add.HorizontalLine(options.VeryHighBgl, width, color, LinePattern.Dotted);
-        plot.Add.HorizontalLine(options.HighBgl, width, color, LinePattern.Dashed);
-        plot.Add.HorizontalLine(options.LowBgl, width, color, LinePattern.Dashed);
-        plot.Add.HorizontalLine(options.VeryLowBgl, width, color, LinePattern.Dotted);
-
-        plot.Axes.Left.TickGenerator =
-            new ScottPlot.TickGenerators.NumericFixedInterval(2);
-
-        return plot;
-    }
-
     private void AddLabels(Plot plot)
     {
-        if (!TimeZoneInfo.TryFindSystemTimeZoneById(options.TimeZone, out var zone))
+        if (!TimeZoneInfo.TryFindSystemTimeZoneById(_options.TimeZone, out var zone))
         {
             zone = TimeZoneInfo.Utc;
-            LogUnknownTimezone(options.TimeZone);
+            LogUnknownTimezone(_options.TimeZone);
         }
 
         var zoneNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, zone);
@@ -63,49 +42,11 @@ internal sealed partial class StatusPlotter
         plot.Axes.Left.Label.Text = "mmol / L";
     }
 
-    private void AddBglData(Plot plot)
-    {
-        var timeLength = HoursToMilliseconds(hours + 0.25);
-        var timeEnd = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var timeStart = timeEnd - timeLength;
-
-        var data = context.BglEntries
-            .Where(e => e.Timestamp >= timeStart)
-            .Select(e => new
-            {
-                MillisecondsAgo = e.Timestamp - timeEnd,
-                e.MillimolePerLiter,
-            });
-
-        double minimumY = 2;
-        double maximumY = 16;
-
-        foreach (var datum in data)
-        {
-            var x = MillisecondsToHours(datum.MillisecondsAgo);
-            var y = datum.MillimolePerLiter;
-
-            minimumY = Math.Min(minimumY, y);
-            maximumY = Math.Max(maximumY, y);
-
-            var color = y > options.LowBgl && y < options.HighBgl
-                ? Color.FromColor(System.Drawing.Color.Green)
-                : y > options.VeryLowBgl && y < options.VeryHighBgl
-                ? Color.FromColor(System.Drawing.Color.Orange)
-                : Color.FromColor(System.Drawing.Color.Red);
-
-            plot.Add.Marker(x, y, MarkerShape.FilledCircle, size: 10, color);
-        }
-
-        plot.Axes.SetLimitsX(-(hours + 0.1), 0.1);
-        plot.Axes.SetLimitsY(minimumY, maximumY);
-    }
-
     private void AddBolusData(Plot plot)
     {
-        var start = DateTime.UtcNow.AddHours(-(hours + 0.25));
+        var start = DateTime.UtcNow.AddHours(-(Hours + 0.25));
 
-        var data = context.Treatments
+        var data = _context.Treatments
             .Where(e => e.SysTime >= start)
             .Where(static e => e.Insulin != null)
             .Select(e => new
@@ -148,12 +89,6 @@ internal sealed partial class StatusPlotter
         else
             return 200;
     }
-
-    private static double HoursToMilliseconds(double hours)
-        => hours * 60 * 60 * 1000;
-
-    private static double MillisecondsToHours(double milliseconds)
-        => milliseconds / 1000 / 60 / 60;
 
     [LoggerMessage(LogLevel.Information, "Plot successfully saved to {Path}.")]
     partial void LogPlotSaved(string path);
