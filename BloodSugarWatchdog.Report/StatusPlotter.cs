@@ -4,6 +4,7 @@
 using BloodSugarWatchdog.Data;
 using Microsoft.Extensions.Logging;
 using ScottPlot;
+using ScottPlot.Plottables;
 
 namespace BloodSugarWatchdog.Report;
 
@@ -36,10 +37,10 @@ internal sealed partial class StatusPlotter
         var color = Color.FromColor(System.Drawing.Color.Black);
         const float width = 1;
 
-        plot.Add.HorizontalLine(options.VeryHighBgl, width, color, LinePattern.Dashed);
-        plot.Add.HorizontalLine(options.HighBgl, width, color, LinePattern.Dotted);
-        plot.Add.HorizontalLine(options.LowBgl, width, color, LinePattern.Dotted);
-        plot.Add.HorizontalLine(options.VeryLowBgl, width, color, LinePattern.Dashed);
+        plot.Add.HorizontalLine(options.VeryHighBgl, width, color, LinePattern.Dotted);
+        plot.Add.HorizontalLine(options.HighBgl, width, color, LinePattern.Dashed);
+        plot.Add.HorizontalLine(options.LowBgl, width, color, LinePattern.Dashed);
+        plot.Add.HorizontalLine(options.VeryLowBgl, width, color, LinePattern.Dotted);
 
         plot.Axes.Left.TickGenerator =
             new ScottPlot.TickGenerators.NumericFixedInterval(2);
@@ -122,9 +123,25 @@ internal sealed partial class StatusPlotter
             line.LabelBackgroundColor = Colors.Transparent;
             line.LabelFontColor = Color.FromColor(System.Drawing.Color.Blue);
             line.LabelFontSize = 10;
-            line.LabelOffsetY = 22;
+            line.LabelOffsetY = GetBolusLabelOffsetY(plot, datum.X);
             line.LabelOffsetX = 2;
         }
+    }
+
+    private int GetBolusLabelOffsetY(Plot plot, double xCoord)
+    {
+        var nearestMarker = plot.PlottableList
+            .Where(p => p is Marker m && m.Position.X <= xCoord)
+            .Select(static p => (Marker)p)
+            .OrderByDescending(static m => m.Position.X)
+            .FirstOrDefault();
+
+        Console.Error.WriteLine($"Nearest marker is at x-coord {nearestMarker?.X}, {nearestMarker?.Y}");
+
+        if (nearestMarker is null || nearestMarker.Y < 12)
+            return 50;
+        else
+            return 200;
     }
 
     private static double HoursToMilliseconds(double hours)
