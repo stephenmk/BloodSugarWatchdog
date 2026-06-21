@@ -9,6 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Report;
 
+public interface IDayPlotter
+{
+    void RenderToPath(string path);
+}
+
 public interface IStatusPlotter
 {
     void RenderToPath(string path);
@@ -30,6 +35,7 @@ public static class ServiceCollectionExtensions
             })
             .AddLogging()
             .AddTransient(_ => serviceOptions)
-            .AddTransient<IStatusPlotter, StatusPlotter>();
+            .AddTransient<IStatusPlotter, StatusPlotter>()
+            .AddTransient<IDayPlotter, DayPlotter>();
     }
 }

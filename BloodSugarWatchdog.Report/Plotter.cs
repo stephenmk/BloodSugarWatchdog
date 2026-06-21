@@ -7,7 +7,7 @@ using ScottPlot;
 
 namespace BloodSugarWatchdog.Report;
 
-internal abstract class Plotter
+internal abstract partial class Plotter
 {
     protected readonly ILogger<Plotter> _logger;
     protected readonly BloodSugarContext _context;
@@ -37,47 +37,29 @@ internal abstract class Plotter
         return plot;
     }
 
-    protected void AddBglData(Plot plot)
+    protected TimeZoneInfo GetTimeZoneInfo()
     {
-        var timeLength = HoursToMilliseconds(Hours + 0.25);
-        var timeEnd = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var timeStart = timeEnd - timeLength;
-
-        var data = _context.BglEntries
-            .Where(e => e.Timestamp >= timeStart)
-            .Select(e => new
-            {
-                MillisecondsAgo = e.Timestamp - timeEnd,
-                e.MillimolePerLiter,
-            });
-
-        double minimumY = 2;
-        double maximumY = 16;
-
-        foreach (var datum in data)
+        if (!TimeZoneInfo.TryFindSystemTimeZoneById(_options.TimeZone, out var zone))
         {
-            var x = MillisecondsToHours(datum.MillisecondsAgo);
-            var y = datum.MillimolePerLiter;
-
-            minimumY = Math.Min(minimumY, y);
-            maximumY = Math.Max(maximumY, y);
-
-            var color = y > _options.LowBgl && y < _options.HighBgl
-                ? Color.FromColor(System.Drawing.Color.Green)
-                : y > _options.VeryLowBgl && y < _options.VeryHighBgl
-                ? Color.FromColor(System.Drawing.Color.Orange)
-                : Color.FromColor(System.Drawing.Color.Red);
-
-            plot.Add.Marker(x, y, MarkerShape.FilledCircle, size: 10, color);
+            zone = TimeZoneInfo.Utc;
+            LogUnknownTimezone(_options.TimeZone);
         }
-
-        plot.Axes.SetLimitsX(-(Hours + 0.1), 0.1);
-        plot.Axes.SetLimitsY(minimumY, maximumY);
+        return zone;
     }
 
-    private static double HoursToMilliseconds(double hours)
+    protected Color GetBglMarkerColor(double y)
+        => y > _options.LowBgl && y < _options.HighBgl
+            ? Color.FromColor(System.Drawing.Color.Green)
+        : y > _options.VeryLowBgl && y < _options.VeryHighBgl
+            ? Color.FromColor(System.Drawing.Color.Orange)
+        : Color.FromColor(System.Drawing.Color.Red);
+
+    protected static double HoursToMilliseconds(double hours)
         => hours * 60 * 60 * 1000;
 
-    private static double MillisecondsToHours(double milliseconds)
+    protected static double MillisecondsToHours(double milliseconds)
         => milliseconds / 1000 / 60 / 60;
+
+    [LoggerMessage(LogLevel.Warning, "Unknown timezone {Timezone}.")]
+    partial void LogUnknownTimezone(string timezone);
 }
