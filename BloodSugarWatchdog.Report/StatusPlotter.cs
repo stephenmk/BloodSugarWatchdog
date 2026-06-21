@@ -136,8 +136,6 @@ internal sealed partial class StatusPlotter
             .OrderByDescending(static m => m.Position.X)
             .FirstOrDefault();
 
-        Console.Error.WriteLine($"Nearest marker is at x-coord {nearestMarker?.X}, {nearestMarker?.Y}");
-
         if (nearestMarker is null || nearestMarker.Y < 12)
             return 50;
         else
