@@ -8,6 +8,11 @@ using ScottPlot.Plottables;
 
 namespace BloodSugarWatchdog.Report;
 
+public interface IStatusPlotter
+{
+    void RenderToPath(string path);
+}
+
 internal sealed partial class StatusPlotter : Plotter, IStatusPlotter
 {
     public StatusPlotter(ILogger<StatusPlotter> logger, BloodSugarContext context, PlotOptions options)

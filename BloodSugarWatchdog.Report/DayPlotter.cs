@@ -8,6 +8,11 @@ using ScottPlot.Plottables;
 
 namespace BloodSugarWatchdog.Report;
 
+public interface IDayPlotter
+{
+    void RenderToPath(string path);
+}
+
 internal sealed partial class DayPlotter : Plotter, IDayPlotter
 {
     public DayPlotter(ILogger<DayPlotter> logger, BloodSugarContext context, PlotOptions options)
