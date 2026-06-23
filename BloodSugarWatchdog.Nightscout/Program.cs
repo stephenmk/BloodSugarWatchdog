@@ -30,7 +30,7 @@ internal static class Program
         using var context = provider.GetRequiredService<BloodSugarContext>();
         context.Database.Migrate();
 
-        var service = provider.GetRequiredService<NightscoutService>();
+        var service = provider.GetRequiredService<INightscoutService>();
 
         try
         {
@@ -82,7 +82,7 @@ internal static class Program
         serviceCollection.AddNightscoutService(options =>
         {
             options.Username = username;
-            options.ClientUserAgent = "BloodSugarWatchdog/1.0";
+            options.HttpClientUserAgent = "BloodSugarWatchdog/1.0";
         });
 
         serviceCollection.AddLogging(static builder =>

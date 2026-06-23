@@ -14,6 +14,7 @@ internal sealed partial class NightscoutService
     BglImporter bglImporter,
     TreatmentImporter treatmentImporter
 )
+    : INightscoutService
 {
     public async Task RunAsync(int millisecondsDelay, CancellationToken ct = default)
     {

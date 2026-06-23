@@ -17,7 +17,7 @@ internal sealed class NightscoutHttpClient : IDisposable
         {
             BaseAddress = new Uri($"https://{options.Username}.my.nightscoutpro.com/"),
         };
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", options.ClientUserAgent);
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", options.HttpClientUserAgent);
     }
 
     public Task<JsonArray?> GetEntriesAsync(CancellationToken ct = default)

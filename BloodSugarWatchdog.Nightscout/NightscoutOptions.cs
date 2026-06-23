@@ -3,8 +3,8 @@
 
 namespace BloodSugarWatchdog.Nightscout;
 
-internal sealed class NightscoutOptions
+public sealed class NightscoutOptions
 {
     public string Username { get; set; } = string.Empty;
-    public string ClientUserAgent { get; set; } = string.Empty;
+    public string HttpClientUserAgent { get; set; } = string.Empty;
 }
