@@ -24,7 +24,9 @@ public abstract partial class Importer
     public int Import(DirectoryInfo directory)
     {
         Initialize();
-        return ImportDirectory(directory);
+        var count = ImportDirectory(directory);
+        LogNewEntries(count);
+        return count;
     }
 
     public int Import(JsonArray array)
@@ -43,6 +45,8 @@ public abstract partial class Importer
         }
 
         _context.SaveChanges();
+        LogNewEntries(count);
+
         return count;
     }
 
@@ -133,4 +137,15 @@ public abstract partial class Importer
 
     [LoggerMessage(LogLevel.Warning, "Exception occurred while processing object: `{Message}`")]
     partial void LogInvalidObject(string message);
+
+    private void LogNewEntries(int count)
+    {
+        if (count == 1)
+            LogOneNewEntry();
+        else
+            LogMultipleNewEntries(count);
+    }
+
+    protected abstract void LogOneNewEntry();
+    protected abstract void LogMultipleNewEntries(int count);
 }

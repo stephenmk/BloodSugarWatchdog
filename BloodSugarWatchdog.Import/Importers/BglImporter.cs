@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import.Importers;
 
-public sealed class BglImporter
+public sealed partial class BglImporter
 (
     ILogger<BglImporter> logger,
     BloodSugarContext context
@@ -123,6 +123,12 @@ public sealed class BglImporter
         else
             throw new Exception("No `sysTime` or `dateString` property found");
     }
+
+    [LoggerMessage(LogLevel.Information, "Downloaded 1 new BGL entry.")]
+    protected override partial void LogOneNewEntry();
+
+    [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new BGL entries.")]
+    protected override partial void LogMultipleNewEntries(int count);
 
     private static BglDirectionType DirectionToDirectionType(string direction)
         => direction switch

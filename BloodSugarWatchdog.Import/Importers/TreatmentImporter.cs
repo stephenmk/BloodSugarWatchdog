@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import.Importers;
 
-public sealed class TreatmentImporter
+public sealed partial class TreatmentImporter
 (
     ILogger<TreatmentImporter> logger,
     BloodSugarContext context
@@ -107,6 +107,12 @@ public sealed class TreatmentImporter
         else
             throw new Exception("No `sysTime` or `created_at` property found");
     }
+
+    [LoggerMessage(LogLevel.Information, "Downloaded 1 new treatment entry.")]
+    protected override partial void LogOneNewEntry();
+
+    [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new treatment entries.")]
+    protected override partial void LogMultipleNewEntries(int count);
 
     protected override FrozenSet<string> KnownProperties { get; } = new HashSet<string>()
     {
