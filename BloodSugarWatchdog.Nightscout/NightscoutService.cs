@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using System.Text.Json.Nodes;
+using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Import.Importers;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Nightscout;
@@ -12,24 +14,22 @@ internal sealed partial class NightscoutService
     ILogger<NightscoutService> logger,
     NightscoutHttpClient client,
     BglImporter bglImporter,
-    TreatmentImporter treatmentImporter
+    TreatmentImporter treatmentImporter,
+    BloodSugarContext context
 )
-    : INightscoutService
+    : BackgroundService
 {
-    public async Task RunAsync(int millisecondsDelay, CancellationToken ct = default)
+    protected override async Task ExecuteAsync(CancellationToken ct = default)
     {
-        while (true)
+        while (!ct.IsCancellationRequested)
         {
-            var delayTask = Task.Delay(millisecondsDelay, ct);
             var data = await GetDataAsync(ct);
 
-            var bglCount = bglImporter.Import(data.Entries);
-            LogNewEntries(bglCount);
+            bglImporter.Import(data.Entries);
+            treatmentImporter.Import(data.Treatments);
 
-            var treatmentCount = treatmentImporter.Import(data.Treatments);
-            LogNewTreatments(treatmentCount);
-
-            await delayTask;
+            var millisecondsDelay = GetMillisecondsDelay();
+            await Task.Delay(millisecondsDelay, ct);
         }
     }
 
@@ -51,12 +51,35 @@ internal sealed partial class NightscoutService
         return new(entries, treatments);
     }
 
-    [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new BGL entries.")]
-    partial void LogNewEntries(int count);
+    private int GetMillisecondsDelay()
+    {
+        var latestTimestamp = context.BglEntries
+            .OrderByDescending(static e => e.Timestamp)
+            .Select(static e => e.Timestamp)
+            .FirstOrDefault();
 
-    [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new treatment records.")]
-    partial void LogNewTreatments(int count);
+        const int defaultDelay = 5 * 60 * 1000; // Five minutes between entries.
+
+        if (latestTimestamp is default(long)) // No entries in database?
+            return defaultDelay;
+
+        var expectedNextEntryTime = DateTimeOffset
+            .FromUnixTimeMilliseconds(latestTimestamp)
+            .ToUniversalTime()
+            .AddMinutes(7); // Two minute gap between entry time and API posting time.
+
+        var delay = (expectedNextEntryTime - DateTime.UtcNow).TotalMilliseconds;
+
+        if (delay < 0)
+            delay = defaultDelay;
+
+        LogNextExpectedEntry(DateTime.Now.AddMilliseconds(delay));
+        return (int)delay;
+    }
 
     [LoggerMessage(LogLevel.Warning, "HttpRequestException: {Message}")]
     partial void LogHttpRequestException(string message);
+
+    [LoggerMessage(LogLevel.Information, "Next new entries expected at {DateTime:HH:mm:ss}")]
+    partial void LogNextExpectedEntry(DateTime dateTime);
 }

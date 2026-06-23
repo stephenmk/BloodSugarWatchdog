@@ -6,11 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BloodSugarWatchdog.Nightscout;
 
-public interface INightscoutService
-{
-    Task RunAsync(int millisecondsDelay, CancellationToken ct = default);
-}
-
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddNightscoutService(this IServiceCollection services, Action<NightscoutOptions> configure)
@@ -19,10 +14,9 @@ public static class ServiceCollectionExtensions
         configure(serviceOptions);
 
         return services
-            .AddLogging()
             .AddImportServices(serviceOptions.Username)
             .AddTransient(_ => serviceOptions)
             .AddTransient<NightscoutHttpClient>()
-            .AddTransient<INightscoutService, NightscoutService>();
+            .AddHostedService<NightscoutService>();
     }
 }
