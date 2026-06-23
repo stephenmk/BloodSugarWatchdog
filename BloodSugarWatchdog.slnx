@@ -2,5 +2,5 @@
   <Project Path="BloodSugarWatchdog.Data/BloodSugarWatchdog.Data.csproj" />
   <Project Path="BloodSugarWatchdog.Import/BloodSugarWatchdog.Import.csproj" />
   <Project Path="BloodSugarWatchdog.Nightscout/BloodSugarWatchdog.Nightscout.csproj" />
-  <Project Path="BloodSugarWatchdog.Plot/BloodSugarWatchdog.Plot.csproj" />
+  <Project Path="BloodSugarWatchdog.Report/BloodSugarWatchdog.Report.csproj" />
 </Solution>
