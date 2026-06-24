@@ -13,8 +13,8 @@ namespace BloodSugarWatchdog.Import.Importers;
 
 public interface IBglImporter
 {
-    int Import(DirectoryInfo directory);
-    int Import(JsonArray array);
+    void Import(DirectoryInfo directory);
+    void Import(JsonArray array);
 }
 
 internal sealed partial class BglImporter

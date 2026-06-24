@@ -24,21 +24,18 @@ internal static class Program
         using var context = provider.GetRequiredService<BloodSugarContext>();
         context.Database.Migrate();
 
-        int count = 0;
-
         switch (parsedArgs.DataType)
         {
             case DataType.Bgl:
                 var bglImporter = provider.GetRequiredService<BglImporter>();
-                count = bglImporter.Import(parsedArgs.Directory);
+                bglImporter.Import(parsedArgs.Directory);
                 break;
             case DataType.Treatment:
                 var treatmentImporter = provider.GetRequiredService<TreatmentImporter>();
-                count = treatmentImporter.Import(parsedArgs.Directory);
+                treatmentImporter.Import(parsedArgs.Directory);
                 break;
         }
 
-        Console.Error.WriteLine($"Imported {count:N0} new records.");
         return 0;
     }
 
