@@ -66,7 +66,7 @@ internal sealed partial class NightscoutService
             .Select(static e => e.Timestamp)
             .FirstOrDefault();
 
-        const int defaultDelay = 5 * 60 * 1000; // Five minutes between entries.
+        const int defaultDelay = 1 * 60 * 1000; // One minute in milliseconds.
 
         if (latestTimestamp is default(long)) // No entries in database?
             return defaultDelay;
@@ -74,7 +74,7 @@ internal sealed partial class NightscoutService
         var expectedNextEntryTime = DateTimeOffset
             .FromUnixTimeMilliseconds(latestTimestamp)
             .ToUniversalTime()
-            .AddMinutes(8); // Three minute gap between entry time and API posting time.
+            .AddMinutes(7); // Two minute gap between entry time and API posting time.
 
         var delay = (expectedNextEntryTime - DateTime.UtcNow).TotalMilliseconds;
 

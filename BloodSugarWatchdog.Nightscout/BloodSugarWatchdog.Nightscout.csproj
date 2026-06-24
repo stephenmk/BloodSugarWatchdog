@@ -8,7 +8,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
-    <PackageReference Include="System.CommandLine" Version="2.0.9" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BloodSugarWatchdog.Import\BloodSugarWatchdog.Import.csproj" />

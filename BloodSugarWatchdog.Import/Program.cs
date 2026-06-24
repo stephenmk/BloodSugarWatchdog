@@ -3,6 +3,7 @@
 
 using System.CommandLine;
 using BloodSugarWatchdog.Data;
+using BloodSugarWatchdog.Data.Paths;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -89,7 +90,14 @@ internal static class Program
     {
         var serviceCollection = new ServiceCollection();
 
-        serviceCollection.AddImportServices(username);
+        serviceCollection.AddImportServices();
+
+        serviceCollection.AddDbContext<BloodSugarContext>(options =>
+        {
+            options.UseSqlite(ApplicationPaths.GetSqliteConnectionString(username));
+            // Disable EntityFramework logging
+            options.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddFilter(_ => false); }));
+        });
 
         serviceCollection.AddLogging(static builder =>
             builder.AddSimpleConsole(static options =>

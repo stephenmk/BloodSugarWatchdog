@@ -3,8 +3,11 @@
 
 namespace BloodSugarWatchdog.Nightscout;
 
-public sealed class NightscoutOptions
+public sealed record NightscoutOptions
 {
-    public string Username { get; set; } = string.Empty;
-    public string HttpClientUserAgent { get; set; } = string.Empty;
+    public const string ConfigSectionPath = nameof(NightscoutService);
+
+    public required string ApiEndpoint { get; init; }
+    public required string HttpClientUserAgent { get; init; }
+    public required string Username { get; init; }
 }
