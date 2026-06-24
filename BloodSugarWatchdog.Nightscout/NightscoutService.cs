@@ -66,7 +66,7 @@ internal sealed partial class NightscoutService
         var expectedNextEntryTime = DateTimeOffset
             .FromUnixTimeMilliseconds(latestTimestamp)
             .ToUniversalTime()
-            .AddMinutes(7); // Two minute gap between entry time and API posting time.
+            .AddMinutes(8); // Three minute gap between entry time and API posting time.
 
         var delay = (expectedNextEntryTime - DateTime.UtcNow).TotalMilliseconds;
 
