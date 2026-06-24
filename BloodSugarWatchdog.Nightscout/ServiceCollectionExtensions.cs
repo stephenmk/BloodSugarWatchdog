@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BloodSugarWatchdog.Nightscout;
 
-public record NewDataEvent(long CreatedAt);
+public readonly record struct NewDataEvent(long TimestampMilliseconds);
 
 public static class ServiceCollectionExtensions
 {
