@@ -12,8 +12,8 @@ namespace BloodSugarWatchdog.Import;
 
 public interface ITreatmentImporter
 {
-    void Import(DirectoryInfo directory);
-    void Import(JsonArray array);
+    int Import(DirectoryInfo directory);
+    int Import(JsonArray array);
 }
 
 internal sealed partial class TreatmentImporter

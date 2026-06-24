@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using System.Text.Json.Nodes;
+using System.Threading.Channels;
 using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Import;
 using Microsoft.Extensions.Hosting;
@@ -15,7 +16,8 @@ internal sealed partial class NightscoutService
     NightscoutHttpClient client,
     IBglImporter bglImporter,
     ITreatmentImporter treatmentImporter,
-    BloodSugarContext context
+    BloodSugarContext context,
+    ChannelWriter<NewDataEvent> channel
 )
     : BackgroundService
 {
@@ -25,8 +27,14 @@ internal sealed partial class NightscoutService
         {
             var data = await GetDataAsync(ct);
 
-            bglImporter.Import(data.Entries);
+            var count = bglImporter.Import(data.Entries);
             treatmentImporter.Import(data.Treatments);
+
+            if (count > 0)
+            {
+                var now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                await channel.WriteAsync(new(now), ct);
+            }
 
             var millisecondsDelay = GetMillisecondsDelay();
             await Task.Delay(millisecondsDelay, ct);

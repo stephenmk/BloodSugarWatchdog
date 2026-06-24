@@ -1,10 +1,13 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+using System.Threading.Channels;
 using BloodSugarWatchdog.Import;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BloodSugarWatchdog.Nightscout;
+
+public record NewDataEvent(long CreatedAt);
 
 public static class ServiceCollectionExtensions
 {
@@ -17,6 +20,10 @@ public static class ServiceCollectionExtensions
             .AddImportServices(serviceOptions.Username)
             .AddTransient(_ => serviceOptions)
             .AddTransient<NightscoutHttpClient>()
-            .AddHostedService<NightscoutService>();
+            .AddHostedService<NightscoutService>()
+
+            .AddSingleton(Channel.CreateUnbounded<NewDataEvent>())
+            .AddSingleton(static sp => sp.GetRequiredService<Channel<NewDataEvent>>().Reader)
+            .AddSingleton(static sp => sp.GetRequiredService<Channel<NewDataEvent>>().Writer);
     }
 }

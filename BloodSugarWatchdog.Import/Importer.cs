@@ -21,14 +21,15 @@ internal abstract partial class Importer
         _context = context;
     }
 
-    public void Import(DirectoryInfo directory)
+    public int Import(DirectoryInfo directory)
     {
         Initialize();
         var count = ImportDirectory(directory);
         LogNewEntries(count);
+        return count;
     }
 
-    public void Import(JsonArray array)
+    public int Import(JsonArray array)
     {
         Initialize();
 
@@ -45,6 +46,7 @@ internal abstract partial class Importer
 
         _context.SaveChanges();
         LogNewEntries(count);
+        return count;
     }
 
     protected abstract void Initialize();
