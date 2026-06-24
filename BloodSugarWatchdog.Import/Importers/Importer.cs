@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import.Importers;
 
-public abstract partial class Importer
+internal abstract partial class Importer
 {
     protected readonly ILogger<Importer> _logger;
     protected readonly BloodSugarContext _context;

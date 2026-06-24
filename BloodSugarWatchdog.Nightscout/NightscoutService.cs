@@ -13,8 +13,8 @@ internal sealed partial class NightscoutService
 (
     ILogger<NightscoutService> logger,
     NightscoutHttpClient client,
-    BglImporter bglImporter,
-    TreatmentImporter treatmentImporter,
+    IBglImporter bglImporter,
+    ITreatmentImporter treatmentImporter,
     BloodSugarContext context
 )
     : BackgroundService

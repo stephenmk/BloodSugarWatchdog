@@ -11,12 +11,18 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import.Importers;
 
-public sealed partial class BglImporter
+public interface IBglImporter
+{
+    int Import(DirectoryInfo directory);
+    int Import(JsonArray array);
+}
+
+internal sealed partial class BglImporter
 (
     ILogger<BglImporter> logger,
     BloodSugarContext context
 )
-    : Importer(logger, context)
+    : Importer(logger, context), IBglImporter
 {
     protected override void Initialize()
     {

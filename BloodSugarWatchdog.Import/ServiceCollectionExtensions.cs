@@ -21,8 +21,8 @@ public static class ServiceCollectionExtensions
                 // Disable EntityFramework logging
                 options.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddFilter(_ => false); }));
             })
-            .AddTransient<BglImporter>()
-            .AddTransient<TreatmentImporter>()
+            .AddTransient<IBglImporter, BglImporter>()
+            .AddTransient<ITreatmentImporter, TreatmentImporter>()
             .AddLogging();
     }
 }
