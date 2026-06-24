@@ -21,7 +21,7 @@ internal sealed partial class NightscoutService
 )
     : BackgroundService
 {
-    protected override async Task ExecuteAsync(CancellationToken ct = default)
+    protected override async Task ExecuteAsync(CancellationToken ct)
     {
         while (!ct.IsCancellationRequested)
         {

@@ -20,10 +20,10 @@ internal sealed class NightscoutHttpClient : IDisposable
         _httpClient.DefaultRequestHeaders.Add("User-Agent", options.HttpClientUserAgent);
     }
 
-    public Task<JsonArray?> GetEntriesAsync(CancellationToken ct = default)
+    public Task<JsonArray?> GetEntriesAsync(CancellationToken ct)
         => GetContentAsync("api/v1/entries.json", ct);
 
-    public Task<JsonArray?> GetTreatmentsAsync(CancellationToken ct = default)
+    public Task<JsonArray?> GetTreatmentsAsync(CancellationToken ct)
         => GetContentAsync("api/v1/treatments.json", ct);
 
     private Task<JsonArray?> GetContentAsync(string requestUri, CancellationToken ct)
