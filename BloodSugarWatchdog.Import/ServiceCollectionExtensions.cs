@@ -3,7 +3,6 @@
 
 using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Data.Paths;
-using BloodSugarWatchdog.Import.Importers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,8 +12,7 @@ namespace BloodSugarWatchdog.Import;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddImportServices(this IServiceCollection services, string username)
-    {
-        return services
+        => services
             .AddDbContext<BloodSugarContext>(options =>
             {
                 options.UseSqlite(ApplicationPaths.GetSqliteConnectionString(username));
@@ -24,5 +22,4 @@ public static class ServiceCollectionExtensions
             .AddTransient<IBglImporter, BglImporter>()
             .AddTransient<ITreatmentImporter, TreatmentImporter>()
             .AddLogging();
-    }
 }

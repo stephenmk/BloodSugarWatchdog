@@ -3,7 +3,6 @@
 
 using System.CommandLine;
 using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Import.Importers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

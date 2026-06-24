@@ -3,7 +3,7 @@
 
 using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Import.Importers;
+using BloodSugarWatchdog.Import;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

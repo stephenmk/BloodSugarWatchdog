@@ -8,7 +8,7 @@ using BloodSugarWatchdog.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import.Importers;
+namespace BloodSugarWatchdog.Import;
 
 public interface ITreatmentImporter
 {
