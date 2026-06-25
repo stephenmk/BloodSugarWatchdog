@@ -27,11 +27,11 @@ internal static class Program
         switch (parsedArgs.DataType)
         {
             case DataType.Bgl:
-                var bglImporter = provider.GetRequiredService<BglImporter>();
+                var bglImporter = provider.GetRequiredService<IBglImporter>();
                 bglImporter.Import(parsedArgs.Directory);
                 break;
             case DataType.Treatment:
-                var treatmentImporter = provider.GetRequiredService<TreatmentImporter>();
+                var treatmentImporter = provider.GetRequiredService<ITreatmentImporter>();
                 treatmentImporter.Import(parsedArgs.Directory);
                 break;
         }
