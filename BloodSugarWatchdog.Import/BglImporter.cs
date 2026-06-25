@@ -130,10 +130,10 @@ internal sealed partial class BglImporter
             throw new Exception("No `sysTime` or `dateString` property found");
     }
 
-    [LoggerMessage(LogLevel.Information, "Downloaded 1 new BGL entry.")]
+    [LoggerMessage(LogLevel.Information, "Imported 1 new BGL entry.")]
     protected override partial void LogOneNewEntry();
 
-    [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new BGL entries.")]
+    [LoggerMessage(LogLevel.Information, "Imported {Count:N0} new BGL entries.")]
     protected override partial void LogMultipleNewEntries(int count);
 
     private static BglDirectionType DirectionToDirectionType(string direction)

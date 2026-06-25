@@ -114,10 +114,10 @@ internal sealed partial class TreatmentImporter
             throw new Exception("No `sysTime` or `created_at` property found");
     }
 
-    [LoggerMessage(LogLevel.Information, "Downloaded 1 new treatment entry.")]
+    [LoggerMessage(LogLevel.Information, "Imported 1 new treatment entry.")]
     protected override partial void LogOneNewEntry();
 
-    [LoggerMessage(LogLevel.Information, "Downloaded {Count:N0} new treatment entries.")]
+    [LoggerMessage(LogLevel.Information, "Imported {Count:N0} new treatment entries.")]
     protected override partial void LogMultipleNewEntries(int count);
 
     protected override FrozenSet<string> KnownProperties { get; } = new HashSet<string>()
