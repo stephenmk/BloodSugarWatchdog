@@ -3,6 +3,7 @@
 
 using BloodSugarWatchdog.Data;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScottPlot;
 using ScottPlot.Plottables;
 
@@ -15,7 +16,7 @@ public interface IDayPlotter
 
 internal sealed partial class DayPlotter : Plotter, IDayPlotter
 {
-    public DayPlotter(ILogger<DayPlotter> logger, BloodSugarContext context, PlotOptions options)
+    public DayPlotter(ILogger<DayPlotter> logger, BloodSugarContext context, IOptions<PlotOptions> options)
         : base(logger, context, options) { }
 
     protected override double Hours => 24.0;

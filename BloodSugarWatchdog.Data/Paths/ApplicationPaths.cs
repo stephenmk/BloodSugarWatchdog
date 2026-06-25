@@ -9,10 +9,10 @@ public static class ApplicationPaths
 {
     private const string AppName = "BloodSugarWatchdog";
 
-    public static string GetAppCacheDirPath(string username)
+    public static string GetAppCacheDirPath()
     {
         var rootPath = EnvironmentPaths.LocalCachePath;
-        var path = Path.Join(rootPath, AppName, username);
+        var path = Path.Join(rootPath, AppName);
 
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);

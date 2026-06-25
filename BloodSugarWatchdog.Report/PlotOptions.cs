@@ -3,12 +3,14 @@
 
 namespace BloodSugarWatchdog.Report;
 
-public sealed class PlotOptions
+public sealed record PlotOptions
 {
-    public string Username { get; set; } = "";
-    public string TimeZone { get; set; } = "US/Central";
-    public double VeryHighBgl { get; set; } = 12.0;
-    public double HighBgl { get; set; } = 9.0;
-    public double LowBgl { get; set; } = 3.9;
-    public double VeryLowBgl { get; set; } = 3.1;
+    public const string ConfigSectionPath = nameof(PlotOptions);
+
+    public required string Username { get; init; }
+    public required string TimeZone { get; init; }
+    public required double VeryHighBgl { get; init; }
+    public required double HighBgl { get; init; }
+    public required double LowBgl { get; init; }
+    public required double VeryLowBgl { get; init; }
 }

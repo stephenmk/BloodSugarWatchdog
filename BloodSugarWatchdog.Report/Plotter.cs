@@ -3,6 +3,7 @@
 
 using BloodSugarWatchdog.Data;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScottPlot;
 
 namespace BloodSugarWatchdog.Report;
@@ -13,9 +14,9 @@ internal abstract partial class Plotter
     protected readonly BloodSugarContext _context;
     protected readonly PlotOptions _options;
 
-    protected Plotter(ILogger<Plotter> logger, BloodSugarContext context, PlotOptions options) =>
+    protected Plotter(ILogger<Plotter> logger, BloodSugarContext context, IOptions<PlotOptions> options) =>
         (_logger, _context, _options) =
-        (@logger, @context, @options);
+        (@logger, @context, options.Value);
 
     protected abstract double Hours { get; }
 

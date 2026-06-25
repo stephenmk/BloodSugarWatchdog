@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         return services
-            .AddDbContext<BloodSugarContext>((sp, options) =>
+            .AddDbContext<BloodSugarContext>(static (sp, options) =>
             {
                 var username = sp.GetRequiredService<IOptions<NightscoutOptions>>().Value.Username;
                 var connectionString = ApplicationPaths.GetSqliteConnectionString(username);

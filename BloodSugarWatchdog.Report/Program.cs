@@ -1,44 +1,36 @@
 ﻿// Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Data.Paths;
+using BloodSugarWatchdog.Report;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace BloodSugarWatchdog.Report;
+var builder = Host.CreateApplicationBuilder(args);
 
-internal static class Program
+builder.Logging.AddSimpleConsole(options =>
 {
-    private static int Main(string[] args)
-    {
-        var username = args[0];
+    options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
+    options.SingleLine = false;
+});
 
-        using var provider = GetServiceProvider(username);
-        var plotter = provider.GetRequiredService<IStatusPlotter>();
+builder.Services.AddDbContext<BloodSugarContext>(static (sp, options) =>
+{
+    var username = sp.GetRequiredService<IOptions<PlotOptions>>().Value.Username;
+    var connectionString = ApplicationPaths.GetSqliteConnectionString(username);
+    options.UseSqlite(connectionString);
+});
 
-        var path = Path.Join(ApplicationPaths.GetAppCacheDirPath(username), "plot.png");
-        plotter.RenderToPath(path);
+builder.Services.AddReportService();
 
-        return 0;
-    }
+using var host = builder.Build();
+var plotter = host.Services.GetRequiredService<IDayPlotter>();
+var path = Path.Join(ApplicationPaths.GetAppCacheDirPath(), "plot.png");
 
-    private static ServiceProvider GetServiceProvider(string username)
-    {
-        var serviceCollection = new ServiceCollection();
+plotter.RenderToPath(path);
 
-        serviceCollection.AddReportService(options =>
-        {
-            options.Username = username;
-        });
-
-        serviceCollection.AddLogging(static builder =>
-            builder.AddSimpleConsole(static options =>
-            {
-                options.IncludeScopes = true;
-                options.SingleLine = false;
-                options.TimestampFormat = "HH:mm:ss ";
-            }));
-
-        return serviceCollection.BuildServiceProvider();
-    }
-}
+return 0;

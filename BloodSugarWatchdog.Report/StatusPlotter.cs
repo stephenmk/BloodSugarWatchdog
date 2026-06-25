@@ -3,6 +3,7 @@
 
 using BloodSugarWatchdog.Data;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScottPlot;
 using ScottPlot.Plottables;
 
@@ -15,7 +16,7 @@ public interface IStatusPlotter
 
 internal sealed partial class StatusPlotter : Plotter, IStatusPlotter
 {
-    public StatusPlotter(ILogger<StatusPlotter> logger, BloodSugarContext context, PlotOptions options)
+    public StatusPlotter(ILogger<StatusPlotter> logger, BloodSugarContext context, IOptions<PlotOptions> options)
         : base(logger, context, options) { }
 
     protected override double Hours => 3.0;
