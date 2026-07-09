@@ -52,6 +52,10 @@ internal sealed partial class NightscoutService
             entries = await client.GetEntriesAsync(ct) ?? [];
             treatments = await client.GetTreatmentsAsync(ct) ?? [];
         }
+        catch (TimeoutException ex)
+        {
+            LogTimeoutException(ex.Message);
+        }
         catch (HttpRequestException ex)
         {
             LogHttpRequestException(ex.Message);
@@ -87,6 +91,9 @@ internal sealed partial class NightscoutService
 
     [LoggerMessage(LogLevel.Warning, "HttpRequestException: {Message}")]
     partial void LogHttpRequestException(string message);
+
+    [LoggerMessage(LogLevel.Warning, "Timeout: {Message}")]
+    partial void LogTimeoutException(string message);
 
     [LoggerMessage(LogLevel.Information, "Next new entries expected at {DateTime:HH:mm:ss}")]
     partial void LogNextExpectedEntry(DateTime dateTime);
