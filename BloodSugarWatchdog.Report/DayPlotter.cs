@@ -46,7 +46,7 @@ internal sealed partial class DayPlotter : Plotter, IDayPlotter
         var zoneNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, zone);
         var zoneYesterday = zoneNow.AddDays(-1);
 
-        plot.Title($"{zoneYesterday:D}");
+        plot.Title($"{zoneYesterday:d MMMM yyyy (dddd)}");
         plot.Axes.Bottom.Label.Text = zone.StandardName.ToLower();
         plot.Axes.Left.Label.Text = "mmol / L";
     }
