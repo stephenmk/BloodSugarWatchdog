@@ -52,7 +52,7 @@ internal sealed partial class NightscoutService
             entries = await client.GetEntriesAsync(ct) ?? [];
             treatments = await client.GetTreatmentsAsync(ct) ?? [];
         }
-        catch (TimeoutException ex)
+        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
         {
             LogTimeoutException(ex.Message);
         }
