@@ -3,7 +3,6 @@
 
 using System.Text.Json.Nodes;
 using System.Threading.Channels;
-using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Import;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,13 +15,13 @@ internal sealed partial class NightscoutService
     NightscoutHttpClient client,
     IBglImporter bglImporter,
     ITreatmentImporter treatmentImporter,
-    BloodSugarContext context,
     ChannelWriter<NightscoutDataEvent> channel
-)
-    : BackgroundService
+) :
+    BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
+        const int delay = 1000 * 60;
         while (!ct.IsCancellationRequested)
         {
             var data = await GetDataAsync(ct);
@@ -36,12 +35,15 @@ internal sealed partial class NightscoutService
                 await channel.WriteAsync(new(now), ct);
             }
 
-            var millisecondsDelay = GetMillisecondsDelay();
-            await Task.Delay(millisecondsDelay, ct);
+            await Task.Delay(delay, ct);
         }
     }
 
-    private sealed record Data(JsonArray Entries, JsonArray Treatments);
+    private sealed record Data
+    (
+        JsonArray Entries,
+        JsonArray Treatments
+    );
 
     private async Task<Data> GetDataAsync(CancellationToken ct)
     {
@@ -63,38 +65,9 @@ internal sealed partial class NightscoutService
         return new(entries, treatments);
     }
 
-    private int GetMillisecondsDelay()
-    {
-        var latestTimestamp = context.BglEntries
-            .OrderByDescending(static e => e.Timestamp)
-            .Select(static e => e.Timestamp)
-            .FirstOrDefault();
-
-        const int defaultDelay = 1 * 60 * 1000; // One minute in milliseconds.
-
-        if (latestTimestamp is default(long)) // No entries in database?
-            return defaultDelay;
-
-        var expectedNextEntryTime = DateTimeOffset
-            .FromUnixTimeMilliseconds(latestTimestamp)
-            .ToUniversalTime()
-            .AddMinutes(7); // Two minute gap between entry time and API posting time.
-
-        var delay = (expectedNextEntryTime - DateTime.UtcNow).TotalMilliseconds;
-
-        if (delay < 0)
-            delay = defaultDelay;
-
-        LogNextExpectedEntry(DateTime.Now.AddMilliseconds(delay));
-        return (int)delay;
-    }
-
     [LoggerMessage(LogLevel.Warning, "HttpRequestException: {Message}")]
     partial void LogHttpRequestException(string message);
 
     [LoggerMessage(LogLevel.Warning, "Timeout: {Message}")]
     partial void LogTimeoutException(string message);
-
-    [LoggerMessage(LogLevel.Information, "Next new entries expected at {DateTime:HH:mm:ss}")]
-    partial void LogNextExpectedEntry(DateTime dateTime);
 }
