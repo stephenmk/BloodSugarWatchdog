@@ -5,7 +5,6 @@ using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Data.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import;
@@ -23,28 +22,34 @@ internal abstract partial class Importer
 
     public int Import(DirectoryInfo directory)
     {
-        Initialize();
-        var count = ImportDirectory(directory);
+        int count;
+        using (var transaction = _context.Database.BeginTransaction())
+        {
+            Initialize();
+            count = ImportDirectory(directory);
+            transaction.Commit();
+        }
         LogNewEntries(count);
         return count;
     }
 
     public int Import(JsonArray array)
     {
-        Initialize();
-
         int count = 0;
-        foreach (var node in array)
+        using (var transaction = _context.Database.BeginTransaction())
         {
-            if (node is not JsonObject obj)
+            Initialize();
+            foreach (var node in array)
             {
-                LogInvalidNode(node?.GetElementIndex());
-                continue;
+                if (node is not JsonObject obj)
+                {
+                    LogInvalidNode(node?.GetElementIndex());
+                    continue;
+                }
+                count += ImportObject(obj);
             }
-            count += ImportObject(obj);
+            transaction.Commit();
         }
-
-        _context.SaveChanges();
         LogNewEntries(count);
         return count;
     }
@@ -72,16 +77,15 @@ internal abstract partial class Importer
     {
         Console.Error.WriteLine(file.FullName);
         Dictionary<string, JsonObject> data;
+
         using (var stream = file.OpenRead())
-        {
             data = JsonSerializer.Deserialize<Dictionary<string, JsonObject>>(stream) ?? [];
-        }
+
         int count = 0;
+
         foreach (var (key, obj) in data)
-        {
             count += ImportObject(obj);
-        }
-        _context.SaveChanges();
+
         return count;
     }
 
@@ -117,7 +121,7 @@ internal abstract partial class Importer
         if (uniqueIdentifier is not null && _context.ErrorRecords.Any(r => r.UniqueIdentifier == uniqueIdentifier))
             return;
 
-        _context.ErrorRecords.Add(new ErrorRecord
+        _context.ErrorRecords.Add(new()
         {
             Id = default,
             CreatedAt = DateTime.UtcNow,
@@ -126,6 +130,8 @@ internal abstract partial class Importer
             StackTrace = ex.StackTrace,
             RecordJson = JsonSerializer.SerializeToUtf8Bytes(obj),
         });
+
+        _context.SaveChanges();
     }
 
     protected abstract bool AddObject(JsonObject obj);

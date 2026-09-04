@@ -53,6 +53,8 @@ internal sealed partial class TreatmentImporter
             SysTime = GetSysTime(obj),
         });
 
+        _context.SaveChanges();
+
         return true;
     }
 

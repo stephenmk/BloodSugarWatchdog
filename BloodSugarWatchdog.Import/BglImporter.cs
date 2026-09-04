@@ -33,18 +33,20 @@ internal sealed partial class BglImporter
     private void InitializeDirections()
     {
         _context.BglDirections.Load();
+
         if (_context.BglDirections.Any())
-        {
             return;
-        }
+
         foreach (var type in Enum.GetValues<BglDirectionType>())
         {
-            _context.BglDirections.Add(new BglDirection
+            _context.BglDirections.Add(new()
             {
                 Type = type,
                 Name = type.ToString(),
             });
         }
+
+        _context.SaveChanges();
     }
 
     protected override bool AddObject(JsonObject obj)
@@ -70,6 +72,8 @@ internal sealed partial class BglImporter
             SysTime = GetSysTime(obj),
             DirectionType = DirectionToDirectionType((string)obj["direction"]!),
         });
+
+        _context.SaveChanges();
 
         return true;
     }
