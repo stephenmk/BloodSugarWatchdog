@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace BloodSugarWatchdog.Nightscout;
 
-public readonly record struct NewDataEvent(long TimestampMilliseconds);
+public readonly record struct NightscoutDataEvent(long TimestampMilliseconds);
 
 public static class ServiceCollectionExtensions
 {
@@ -34,8 +34,8 @@ public static class ServiceCollectionExtensions
             .AddTransient<NightscoutHttpClient>()
             .AddHostedService<NightscoutService>()
 
-            .AddSingleton(Channel.CreateUnbounded<NewDataEvent>())
-            .AddSingleton(static sp => sp.GetRequiredService<Channel<NewDataEvent>>().Reader)
-            .AddSingleton(static sp => sp.GetRequiredService<Channel<NewDataEvent>>().Writer);
+            .AddSingleton(Channel.CreateUnbounded<NightscoutDataEvent>())
+            .AddSingleton(static sp => sp.GetRequiredService<Channel<NightscoutDataEvent>>().Reader)
+            .AddSingleton(static sp => sp.GetRequiredService<Channel<NightscoutDataEvent>>().Writer);
     }
 }

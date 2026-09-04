@@ -17,7 +17,7 @@ internal sealed partial class NightscoutService
     IBglImporter bglImporter,
     ITreatmentImporter treatmentImporter,
     BloodSugarContext context,
-    ChannelWriter<NewDataEvent> channel
+    ChannelWriter<NightscoutDataEvent> channel
 )
     : BackgroundService
 {
