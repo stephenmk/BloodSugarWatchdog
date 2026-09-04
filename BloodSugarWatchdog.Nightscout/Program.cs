@@ -12,12 +12,13 @@ internal static class Program
     {
         var builder = Host.CreateApplicationBuilder(args);
 
-        builder.Logging.AddSimpleConsole(options =>
-        {
-            options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
-            options.SingleLine = false;
-        });
+        // builder.Logging.AddSimpleConsole(options =>
+        // {
+        //     options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
+        //     options.SingleLine = false;
+        // });
 
+        builder.Logging.AddSystemdConsole();
         builder.Services.AddNightscoutService();
 
         using var host = builder.Build();

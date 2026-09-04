@@ -1,0 +1,53 @@
+[Unit]
+Description=Blood Sugar Watchdog
+After=network.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=exec
+ExecStart=%h/.local/bin/BloodSugarWatchdog.Nightscout/BloodSugarWatchdog.Nightscout
+WorkingDirectory=%h/.local/bin/BloodSugarWatchdog.Nightscout
+Restart=on-failure
+
+# Capabilities
+AmbientCapabilities=
+CapabilityBoundingSet=
+
+# Common directives
+LockPersonality=yes
+MemoryDenyWriteExecute=no
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateNetwork=no
+PrivateTmp=yes
+PrivateUsers=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+
+# Configurable directives
+ProtectSystem=strict
+ProtectHome=no
+ProtectProc=invisible
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# Advanced directives
+DevicePolicy=closed
+DynamicUser=no
+IPAddressDeny=
+KeyringMode=private
+ProcSubset=pid
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RemoveIPC=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+UMask=0077
+
+[Install]
+WantedBy=default.target
