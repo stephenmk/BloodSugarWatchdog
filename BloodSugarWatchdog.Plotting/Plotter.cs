@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ScottPlot;
 
-namespace BloodSugarWatchdog.Report;
+namespace BloodSugarWatchdog.Plotting;
 
 internal abstract partial class Plotter
 {

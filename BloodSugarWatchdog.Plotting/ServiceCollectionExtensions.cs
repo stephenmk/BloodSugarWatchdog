@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BloodSugarWatchdog.Report;
+namespace BloodSugarWatchdog.Plotting;
 
 public static class ServiceCollectionExtensions
 {
