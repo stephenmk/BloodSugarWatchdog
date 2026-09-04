@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+using BloodSugarWatchdog.Data;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -12,14 +13,14 @@ internal static class Program
     {
         var builder = Host.CreateApplicationBuilder(args);
 
-        // builder.Logging.AddSimpleConsole(options =>
-        // {
-        //     options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
-        //     options.SingleLine = false;
-        // });
+        builder.Logging.AddSimpleConsole(options =>
+        {
+            options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
+            options.SingleLine = false;
+        });
 
-        builder.Logging.AddSystemdConsole();
         builder.Services.AddNightscoutService();
+        builder.Services.AddBloodSugarContext();
 
         using var host = builder.Build();
         await host.RunAsync();

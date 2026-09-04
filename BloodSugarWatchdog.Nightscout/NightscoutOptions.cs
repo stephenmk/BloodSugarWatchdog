@@ -9,5 +9,4 @@ public sealed record NightscoutOptions
 
     public required string ApiEndpoint { get; init; }
     public required string HttpClientUserAgent { get; init; }
-    public required string Username { get; init; }
 }

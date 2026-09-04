@@ -4,27 +4,19 @@
 using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Data.Paths;
 using BloodSugarWatchdog.Report;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Logging.AddSimpleConsole(options =>
+builder.Logging.AddSimpleConsole(static options =>
 {
     options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
     options.SingleLine = false;
 });
 
-builder.Services.AddDbContext<BloodSugarContext>(static (sp, options) =>
-{
-    var username = sp.GetRequiredService<IOptions<PlotOptions>>().Value.Username;
-    var connectionString = ApplicationPaths.GetSqliteConnectionString(username);
-    options.UseSqlite(connectionString);
-});
-
+builder.Services.AddBloodSugarContext();
 builder.Services.AddReportService();
 
 using var host = builder.Build();

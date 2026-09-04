@@ -2,10 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using System.Threading.Channels;
-using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Data.Paths;
 using BloodSugarWatchdog.Import;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -26,20 +23,14 @@ public static class ServiceCollectionExtensions
             client.DefaultRequestHeaders.Add("User-Agent", options.HttpClientUserAgent);
         });
 
-        return services
-            .AddDbContext<BloodSugarContext>(static (sp, options) =>
-            {
-                var username = sp.GetRequiredService<IOptions<NightscoutOptions>>().Value.Username;
-                var connectionString = ApplicationPaths.GetSqliteConnectionString(username);
-                options.UseSqlite(connectionString);
-            })
+        services.AddImportServices();
 
-            .AddImportServices()
+        services.AddHostedService<NightscoutService>();
 
-            .AddHostedService<NightscoutService>()
-
-            .AddSingleton(Channel.CreateUnbounded<long>())
+        services.AddSingleton(Channel.CreateUnbounded<long>())
             .AddSingleton(static sp => sp.GetRequiredService<Channel<long>>().Reader)
             .AddSingleton(static sp => sp.GetRequiredService<Channel<long>>().Writer);
+
+        return services;
     }
 }
