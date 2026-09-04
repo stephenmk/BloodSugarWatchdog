@@ -15,7 +15,7 @@ internal sealed partial class NightscoutService
     NightscoutHttpClient client,
     IBglImporter bglImporter,
     ITreatmentImporter treatmentImporter,
-    ChannelWriter<NightscoutDataEvent> channel
+    ChannelWriter<long> eventWriter
 ) :
     BackgroundService
 {
@@ -32,7 +32,7 @@ internal sealed partial class NightscoutService
             if (count > 0)
             {
                 var now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                await channel.WriteAsync(new(now), ct);
+                await eventWriter.WriteAsync(now, ct);
             }
 
             await Task.Delay(delay, ct);
