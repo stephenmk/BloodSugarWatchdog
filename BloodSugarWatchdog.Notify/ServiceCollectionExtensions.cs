@@ -14,8 +14,6 @@ public static class ServiceCollectionExtensions
             .BindConfiguration(NotifyOptions.ConfigSectionPath)
             .ValidateOnStart();
 
-        services.AddLogging();
-
         services.AddHttpClient<INotifyService, NotifyService>(static (sp, client) =>
         {
             var options = sp.GetRequiredService<IOptions<NotifyOptions>>().Value;

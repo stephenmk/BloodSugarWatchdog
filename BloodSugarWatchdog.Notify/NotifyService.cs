@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace BloodSugarWatchdog.Notify;
 
@@ -14,7 +15,7 @@ internal sealed partial class NotifyService
 (
     ILogger<NotifyService> logger,
     HttpClient httpClient,
-    NotifyOptions options
+    IOptions<NotifyOptions> options
 ) :
     INotifyService
 {
@@ -23,19 +24,19 @@ internal sealed partial class NotifyService
         using var content = new MultipartFormDataContent();
 
         // Caption.
-        content.Add(new StringContent(caption), options.ImageCaptionKey);
+        content.Add(new StringContent(caption), options.Value.ImageCaptionKey);
 
         // Image.
         await using var fileStream = File.OpenRead(path);
-        content.Add(new StreamContent(fileStream), options.ImageContentKey, Path.GetFileName(path));
+        content.Add(new StreamContent(fileStream), options.Value.ImageContentKey, Path.GetFileName(path));
 
         // Other form properties.
-        foreach (var (key, val) in options.FormDataContent)
+        foreach (var (key, val) in options.Value.FormDataContent)
             content.Add(new StringContent(val), key);
 
         try
         {
-            using var response = await httpClient.PostAsync(options.ImageRequestUri, content, ct);
+            using var response = await httpClient.PostAsync(options.Value.ImageRequestUri, content, ct);
 
             if (response.IsSuccessStatusCode)
                 return true;
