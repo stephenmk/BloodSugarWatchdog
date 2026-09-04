@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Notify;
 
+/// <summary>
+/// Command-line executable for testing purposes.
+/// </summary>
 internal static class Program
 {
     private static async Task Main(string[] args)
