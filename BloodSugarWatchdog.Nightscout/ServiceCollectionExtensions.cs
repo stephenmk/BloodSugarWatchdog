@@ -21,6 +21,13 @@ public static class ServiceCollectionExtensions
             .BindConfiguration(NightscoutOptions.ConfigSectionPath)
             .ValidateOnStart();
 
+        services.AddHttpClient<NightscoutHttpClient>(static (sp, client) =>
+        {
+            var options = sp.GetRequiredService<IOptions<NightscoutOptions>>().Value;
+            client.BaseAddress = new Uri(options.ApiEndpoint);
+            client.DefaultRequestHeaders.Add("User-Agent", options.HttpClientUserAgent);
+        });
+
         return services
             .AddDbContext<BloodSugarContext>(static (sp, options) =>
             {
@@ -31,7 +38,6 @@ public static class ServiceCollectionExtensions
 
             .AddImportServices()
 
-            .AddTransient<NightscoutHttpClient>()
             .AddHostedService<NightscoutService>()
 
             .AddSingleton(Channel.CreateUnbounded<NightscoutDataEvent>())
