@@ -17,15 +17,15 @@ builder.Logging
     .AddSystemdConsole();
 
 builder.Services
-    .AddOptions<MonitorOptions>()
-    .BindConfiguration(MonitorOptions.ConfigSectionPath)
-    .ValidateOnStart();
-
-builder.Services
     .AddBloodSugarContext()
     .AddNightscoutService()
     .AddPlottingServices()
     .AddNotifyService();
+
+builder.Services
+    .AddOptions<MonitorOptions>()
+    .BindConfiguration(MonitorOptions.ConfigSectionPath)
+    .ValidateOnStart();
 
 builder.Services
     .AddTransient<LowChecker>()

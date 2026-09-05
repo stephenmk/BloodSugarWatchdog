@@ -1,8 +1,9 @@
 #!/usr/bin/env fish
 
 set projects \
-    BloodSugarWatchdog.Nightscout \
-    BloodSugarWatchdog.DailyReport
+    BloodSugarWatchdog.DailyReport \
+    BloodSugarWatchdog.Monitor \
+    BloodSugarWatchdog.Nightscout
 
 for project in $projects
     dotnet publish \
