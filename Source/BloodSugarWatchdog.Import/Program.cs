@@ -3,9 +3,9 @@
 
 using System.CommandLine;
 using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Data.Paths;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace BloodSugarWatchdog.Import;
@@ -19,19 +19,19 @@ internal static class Program
         if (parsedArgs is null)
             return 1;
 
-        using var provider = GetServiceProvider(parsedArgs.Username);
+        using var host = GetHost();
 
-        using var context = provider.GetRequiredService<BloodSugarContext>();
+        using var context = host.Services.GetRequiredService<BloodSugarContext>();
         context.Database.Migrate();
 
         switch (parsedArgs.DataType)
         {
             case DataType.Bgl:
-                var bglImporter = provider.GetRequiredService<IBglImporter>();
+                var bglImporter = host.Services.GetRequiredService<IBglImporter>();
                 bglImporter.Import(parsedArgs.Directory);
                 break;
             case DataType.Treatment:
-                var treatmentImporter = provider.GetRequiredService<ITreatmentImporter>();
+                var treatmentImporter = host.Services.GetRequiredService<ITreatmentImporter>();
                 treatmentImporter.Import(parsedArgs.Directory);
                 break;
         }
@@ -47,20 +47,17 @@ internal static class Program
 
     private sealed record ParsedArgs
     (
-        string Username,
         DirectoryInfo Directory,
         DataType DataType
     );
 
     private static ParsedArgs? ParseArgs(string[] args)
     {
-        var usernameOption = new Option<string>("--user") { Required = true };
         var dirOption = new Option<DirectoryInfo>("--directory") { Required = true };
         var typeOption = new Option<DataType>("--type") { Required = true };
 
         var rootCommand = new RootCommand("Import nightscout data from JSON files")
         {
-            usernameOption,
             dirOption,
             typeOption,
         };
@@ -73,7 +70,6 @@ internal static class Program
         if (parseResult.Errors.Any())
             return null;
 
-        var username = parseResult.GetRequiredValue(usernameOption);
         var dir = parseResult.GetRequiredValue(dirOption);
         var type = parseResult.GetRequiredValue(typeOption);
 
@@ -83,30 +79,24 @@ internal static class Program
             return null;
         }
 
-        return new(username, dir, type);
+        return new(dir, type);
     }
 
-    private static ServiceProvider GetServiceProvider(string username)
+    private static IHost GetHost()
     {
-        var serviceCollection = new ServiceCollection();
+        var builder = Host.CreateApplicationBuilder();
 
-        serviceCollection.AddImportServices();
+        builder.Services
+            .AddBloodSugarContext()
+            .AddImportServices();
 
-        serviceCollection.AddDbContext<BloodSugarContext>(options =>
+        builder.Logging.AddSimpleConsole(static options =>
         {
-            options.UseSqlite(ApplicationPaths.GetSqliteConnectionString(username));
-            // Disable EntityFramework logging
-            options.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddFilter(_ => false); }));
+            options.IncludeScopes = true;
+            options.SingleLine = true;
+            options.TimestampFormat = "HH:mm:ss ";
         });
 
-        serviceCollection.AddLogging(static builder =>
-            builder.AddSimpleConsole(static options =>
-            {
-                options.IncludeScopes = true;
-                options.SingleLine = true;
-                options.TimestampFormat = "HH:mm:ss ";
-            }));
-
-        return serviceCollection.BuildServiceProvider();
+        return builder.Build();
     }
 }
