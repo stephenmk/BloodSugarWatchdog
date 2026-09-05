@@ -1,20 +1,26 @@
 #!/usr/bin/env fish
 
-dotnet publish \
+set projects \
     BloodSugarWatchdog.Nightscout \
-    -c Release \
-    -r linux-x64 \
-    --self-contained true \
-    -p:PublishSingleFile=false \
-    -o ./publish
-or exit
+    BloodSugarWatchdog.DailyReport
 
-cp -a appsettings.Production.json publish
-or exit
+for project in $projects
+    dotnet publish \
+        $project \
+        -c Release \
+        -r linux-x64 \
+        --self-contained true \
+        -p:PublishSingleFile=false \
+        -o ./publish
+    or exit
 
-rsync -avz --delete \
-    ./publish/ \
-    nightscout:~/.local/bin/BloodSugarWatchdog.Nightscout/
-or exit
+    cp -a appsettings.Production.json publish
+    or exit
 
-rm -r ./publish
+    rsync -avz --delete \
+        ./publish/ \
+        nightscout:~/.local/bin/$project/
+    or exit
+
+    rm -r ./publish
+end

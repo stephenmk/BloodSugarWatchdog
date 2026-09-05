@@ -1,0 +1,47 @@
+[Unit]
+Description=Blood Sugar Daily Report
+Wants=blood-sugar-daily-report.timer
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/BloodSugarWatchdog.DailyReport/BloodSugarWatchdog.DailyReport "Blood sugar daily report"
+WorkingDirectory=%h/.local/bin/BloodSugarWatchdog.DailyReport
+
+# Capabilities
+AmbientCapabilities=
+CapabilityBoundingSet=
+
+# Common directives
+LockPersonality=yes
+MemoryDenyWriteExecute=no
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateNetwork=no
+PrivateTmp=yes
+PrivateUsers=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+
+# Configurable directives
+ProtectSystem=strict
+ProtectHome=no
+ProtectProc=invisible
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# Advanced directives
+DevicePolicy=closed
+DynamicUser=no
+IPAddressDeny=
+KeyringMode=private
+ProcSubset=pid
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RemoveIPC=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+UMask=0077

@@ -1,0 +1,9 @@
+[Unit]
+Description=Run blood-sugar-daily-report once a day at 6am
+
+[Timer]
+OnCalendar=*-*-* 06:00:00 US/Central
+Persistent=true
+
+[Install]
+WantedBy=timers.target
