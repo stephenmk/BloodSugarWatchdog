@@ -1,8 +1,8 @@
 <Solution>
-  <Project Path="BloodSugarWatchdog.DailyReport/BloodSugarWatchdog.DailyReport.csproj" />
-  <Project Path="BloodSugarWatchdog.Data/BloodSugarWatchdog.Data.csproj" />
-  <Project Path="BloodSugarWatchdog.Import/BloodSugarWatchdog.Import.csproj" />
-  <Project Path="BloodSugarWatchdog.Nightscout/BloodSugarWatchdog.Nightscout.csproj" />
-  <Project Path="BloodSugarWatchdog.Notify/BloodSugarWatchdog.Notify.csproj" />
-  <Project Path="BloodSugarWatchdog.Plotting/BloodSugarWatchdog.Plotting.csproj" />
+  <Project Path="Source/BloodSugarWatchdog.DailyReport/BloodSugarWatchdog.DailyReport.csproj" />
+  <Project Path="Source/BloodSugarWatchdog.Data/BloodSugarWatchdog.Data.csproj" />
+  <Project Path="Source/BloodSugarWatchdog.Import/BloodSugarWatchdog.Import.csproj" />
+  <Project Path="Source/BloodSugarWatchdog.Nightscout/BloodSugarWatchdog.Nightscout.csproj" />
+  <Project Path="Source/BloodSugarWatchdog.Notify/BloodSugarWatchdog.Notify.csproj" />
+  <Project Path="Source/BloodSugarWatchdog.Plotting/BloodSugarWatchdog.Plotting.csproj" />
 </Solution>
