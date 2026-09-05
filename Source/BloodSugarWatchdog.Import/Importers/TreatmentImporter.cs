@@ -8,20 +8,15 @@ using BloodSugarWatchdog.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import;
-
-public interface ITreatmentImporter
-{
-    int Import(DirectoryInfo directory);
-    int Import(JsonArray array);
-}
+namespace BloodSugarWatchdog.Import.Importers;
 
 internal sealed partial class TreatmentImporter
 (
     ILogger<TreatmentImporter> logger,
     BloodSugarContext context
-)
-    : Importer(logger, context), ITreatmentImporter
+) :
+    Importer(logger, context),
+    ITreatmentImporter
 {
     protected override void Initialize()
     {
@@ -35,7 +30,7 @@ internal sealed partial class TreatmentImporter
         if (_context.Treatments.Any(treatment => treatment.Id == id))
             return false;
 
-        _context.Treatments.Add(new Treatment
+        _context.Treatments.Add(new()
         {
             Id = id,
             EventType = (string)obj["eventType"]!,

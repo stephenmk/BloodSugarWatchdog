@@ -9,20 +9,15 @@ using BloodSugarWatchdog.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import;
-
-public interface IBglImporter
-{
-    int Import(DirectoryInfo directory);
-    int Import(JsonArray array);
-}
+namespace BloodSugarWatchdog.Import.Importers;
 
 internal sealed partial class BglImporter
 (
     ILogger<BglImporter> logger,
     BloodSugarContext context
-)
-    : Importer(logger, context), IBglImporter
+) :
+    Importer(logger, context),
+    IBglImporter
 {
     protected override void Initialize()
     {
