@@ -29,6 +29,7 @@ builder.Services
 
 builder.Services
     .AddTransient<LowChecker>()
+    .AddTransient<CrashChecker>()
     .AddHostedService<MonitorService>();
 
 using var host = builder.Build();

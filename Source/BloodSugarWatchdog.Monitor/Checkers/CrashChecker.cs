@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace BloodSugarWatchdog.Monitor.Checkers;
 
-internal sealed class LowChecker
+internal sealed class CrashChecker
 (
     IOptions<MonitorOptions> options,
     INotifyService notify,
@@ -17,8 +17,19 @@ internal sealed class LowChecker
     Checker(options, notify, plotter)
 {
     protected override bool IsMatch(ImmutableArray<Bgl> bgls)
-        => bgls.Last().MillimolePerLiter <= _options.Value.LowBgl;
+    {
+        if (CalculateSlope(bgls) is not double slope)
+            return false;
+
+        if (slope >= 0)
+            return false;
+
+        if (Math.Abs(slope) >= _options.Value.CrashSlope)
+            return true;
+
+        return false;
+    }
 
     protected override string GetCaption(ImmutableArray<Bgl> bgls)
-        => _options.Value.LowCaption;
+        => _options.Value.CrashCaption;
 }

@@ -7,6 +7,7 @@ using BloodSugarWatchdog.Data;
 using BloodSugarWatchdog.Monitor.Checkers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace BloodSugarWatchdog.Monitor;
 
@@ -14,8 +15,10 @@ internal readonly record struct Bgl(long Timestamp, double MillimolePerLiter);
 
 internal sealed class MonitorService
 (
+    IOptions<MonitorOptions> options,
     BloodSugarContext context,
     ChannelReader<long> eventReader,
+    CrashChecker crashChecker,
     LowChecker lowChecker
 ) :
     BackgroundService
@@ -29,6 +32,9 @@ internal sealed class MonitorService
             if (!bgls.Any())
                 continue;
 
+            if (await crashChecker.CheckAsync(bgls, ct))
+                continue;
+
             if (await lowChecker.CheckAsync(bgls, ct))
                 continue;
         }
@@ -36,8 +42,9 @@ internal sealed class MonitorService
 
     private ImmutableArray<Bgl> GetRecentBgls()
     {
+        var rangeSize = options.Value.RangeMinutes;
         var now = DateTimeOffset.Now;
-        var rangeStart = now.AddMinutes(-30).ToUnixTimeMilliseconds();
+        var rangeStart = now.AddMinutes(-rangeSize).ToUnixTimeMilliseconds();
         var rangeEnd = now.ToUnixTimeMilliseconds();
         var query = BglQuery(context, rangeStart, rangeEnd);
         return query.ToImmutableArray();
