@@ -6,7 +6,7 @@ set projects \
 
 for project in $projects
     dotnet publish \
-        $project \
+        Source/$project \
         -c Release \
         -r linux-x64 \
         --self-contained true \
