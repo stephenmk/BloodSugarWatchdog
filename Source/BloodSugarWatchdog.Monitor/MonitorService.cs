@@ -19,12 +19,20 @@ internal sealed class MonitorService
     BloodSugarContext context,
     ChannelReader<long> eventReader,
     CrashChecker crashChecker,
-    LowChecker lowChecker
+    LowChecker lowChecker,
+    SpikeChecker spikeChecker
 ) :
     BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
+        var checkers = new Checker[]
+        {
+            crashChecker,
+            lowChecker,
+            spikeChecker,
+        };
+
         await foreach (var _ in eventReader.ReadAllAsync(ct))
         {
             var bgls = GetRecentBgls();
@@ -32,11 +40,11 @@ internal sealed class MonitorService
             if (!bgls.Any())
                 continue;
 
-            if (await crashChecker.CheckAsync(bgls, ct))
-                continue;
-
-            if (await lowChecker.CheckAsync(bgls, ct))
-                continue;
+            foreach (var checker in checkers)
+            {
+                if (await checker.CheckAsync(bgls, ct))
+                    break;
+            }
         }
     }
 
