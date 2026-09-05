@@ -18,6 +18,9 @@ internal sealed class CrashChecker
 {
     protected override bool IsMatch(ImmutableArray<Bgl> bgls)
     {
+        if (bgls.Last().MillimolePerLiter > _options.Value.CrashBgl)
+            return false;
+
         if (CalculateSlope(bgls) is not double slope)
             return false;
 

@@ -13,9 +13,11 @@ internal sealed class MonitorOptions
     public required double LowBgl { get; init; }
     public required string LowCaption { get; init; }
 
+    public required double SpikeBgl { get; init; }
     public required double SpikeSlope { get; init; }
     public required string SpikeCaption { get; init; }
 
+    public required double CrashBgl { get; init; }
     public required double CrashSlope { get; init; }
     public required string CrashCaption { get; init; }
 }

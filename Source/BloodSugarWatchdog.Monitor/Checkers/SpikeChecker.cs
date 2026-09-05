@@ -20,6 +20,9 @@ internal sealed class SpikeChecker
 {
     protected override bool IsMatch(ImmutableArray<Bgl> bgls)
     {
+        if (bgls.Last().MillimolePerLiter < _options.Value.SpikeBgl)
+            return false;
+
         if (CalculateSlope(bgls) is not double slope)
             return false;
 
