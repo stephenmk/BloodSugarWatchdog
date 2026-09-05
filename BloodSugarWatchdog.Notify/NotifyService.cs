@@ -8,7 +8,7 @@ namespace BloodSugarWatchdog.Notify;
 
 public interface INotifyService
 {
-    Task<bool> PostImageAsync(string path, string caption, CancellationToken ct);
+    Task<bool> PostImageAsync(string path, string caption, CancellationToken ct = default);
 }
 
 internal sealed partial class NotifyService

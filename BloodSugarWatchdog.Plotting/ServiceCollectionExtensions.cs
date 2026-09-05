@@ -7,7 +7,7 @@ namespace BloodSugarWatchdog.Plotting;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddReportService(this IServiceCollection services)
+    public static IServiceCollection AddPlottingServices(this IServiceCollection services)
     {
         services.AddOptions<PlotOptions>()
             .BindConfiguration(PlotOptions.ConfigSectionPath)
