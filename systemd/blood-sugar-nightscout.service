@@ -1,5 +1,5 @@
 [Unit]
-Description=Blood Sugar Watchdog
+Description=Blood Sugar Nightscout
 After=network.target
 StartLimitIntervalSec=300
 StartLimitBurst=5
