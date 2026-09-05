@@ -21,22 +21,23 @@ internal sealed partial class NotifyService
 {
     public async Task<bool> PostImageAsync(string path, string caption, CancellationToken ct)
     {
+        var opt = options.Value;
         using var content = new MultipartFormDataContent();
 
         // Caption.
-        content.Add(new StringContent(caption), options.Value.ImageCaptionKey);
+        content.Add(new StringContent(caption), opt.ImageCaptionKey);
 
         // Image.
         await using var fileStream = File.OpenRead(path);
-        content.Add(new StreamContent(fileStream), options.Value.ImageContentKey, Path.GetFileName(path));
+        content.Add(new StreamContent(fileStream), opt.ImageContentKey, Path.GetFileName(path));
 
         // Other form properties.
-        foreach (var (key, val) in options.Value.FormDataContent)
+        foreach (var (key, val) in opt.FormDataContent)
             content.Add(new StringContent(val), key);
 
         try
         {
-            using var response = await httpClient.PostAsync(options.Value.ImageRequestUri, content, ct);
+            using var response = await httpClient.PostAsync(opt.ImageRequestUri, content, ct);
 
             if (response.IsSuccessStatusCode)
                 return true;
