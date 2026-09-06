@@ -147,7 +147,7 @@ internal abstract partial class Importer
     {
         if (count == 1)
             LogOneNewEntry();
-        else
+        else if (count > 1)
             LogMultipleNewEntries(count);
     }
 
