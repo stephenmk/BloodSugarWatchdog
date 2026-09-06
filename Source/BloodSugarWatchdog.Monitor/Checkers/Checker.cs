@@ -13,7 +13,7 @@ internal abstract class Checker
     protected readonly IOptions<MonitorOptions> _options;
     private readonly INotifyService _notify;
     private readonly IStatusPlotter _plotter;
-    private long _lastNotification;
+    private long _lastNotification = 0;
 
     protected Checker(IOptions<MonitorOptions> options, INotifyService notify, IStatusPlotter plotter) =>
         (_options, _notify, _plotter) =
@@ -31,6 +31,9 @@ internal abstract class Checker
         _plotter.RenderToPath(path);
 
         var success = await _notify.PostImageAsync(path, GetCaption(bgls), ct);
+
+        if (File.Exists(path))
+            File.Delete(path);
 
         if (success)
         {
