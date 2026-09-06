@@ -26,7 +26,7 @@ internal sealed class SpikeChecker
         if (CalculateSlope(bgls) is not double slope)
             return false;
 
-        if (Math.Abs(slope) < _options.Value.SpikeSlope)
+        if (slope < _options.Value.SpikeSlope)
             return false;
 
         if (RecentTreatmentExists())
