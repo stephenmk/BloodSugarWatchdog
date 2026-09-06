@@ -89,10 +89,10 @@ internal abstract class Checker
             sumXX += x[i] * x[i];
         }
 
-        var denominator = n * sumXX - sumX * sumX;
+        var denominator = (n * sumXX) - (sumX * sumX);
 
         return denominator == 0
             ? null
-            : (n * sumXY - sumX * sumY) / denominator;
+            : ((n * sumXY) - (sumX * sumY)) / denominator;
     }
 }

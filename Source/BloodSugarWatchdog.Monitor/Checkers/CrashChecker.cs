@@ -27,10 +27,10 @@ internal sealed class CrashChecker
         if (slope >= 0)
             return false;
 
-        if (Math.Abs(slope) >= _options.Value.CrashSlope)
-            return true;
+        if (Math.Abs(slope) < _options.Value.CrashSlope)
+            return false;
 
-        return false;
+        return true;
     }
 
     protected override string GetCaption(ImmutableArray<Bgl> bgls)
