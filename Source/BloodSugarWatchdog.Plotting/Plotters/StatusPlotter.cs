@@ -7,30 +7,18 @@ using Microsoft.Extensions.Options;
 using ScottPlot;
 using ScottPlot.Plottables;
 
-namespace BloodSugarWatchdog.Plotting;
+namespace BloodSugarWatchdog.Plotting.Plotters;
 
-public interface IDayPlotter
+internal sealed partial class StatusPlotter : Plotter, IStatusPlotter
 {
-    void RenderToPath(string path);
-}
-
-internal sealed partial class DayPlotter : Plotter, IDayPlotter
-{
-    public DayPlotter(ILogger<DayPlotter> logger, BloodSugarContext context, IOptions<PlotOptions> options)
+    public StatusPlotter(ILogger<StatusPlotter> logger, BloodSugarContext context, IOptions<PlotOptions> options)
         : base(logger, context, options) { }
 
-    protected override double Hours => 24.0;
+    protected override double Hours => 3.0;
 
     public void RenderToPath(string path)
     {
         using var plot = InitializePlot();
-
-        var axis = plot.Axes.DateTimeTicksBottom();
-        var tickGen = (ScottPlot.TickGenerators.DateTimeAutomatic)axis.TickGenerator;
-        tickGen.LabelFormatter = static dt => dt.ToString("h tt");
-
-        plot.Axes.Left.TickGenerator =
-            new ScottPlot.TickGenerators.NumericFixedInterval(2);
 
         AddLabels(plot);
         AddBglData(plot);
@@ -44,10 +32,9 @@ internal sealed partial class DayPlotter : Plotter, IDayPlotter
     {
         var zone = GetTimeZoneInfo();
         var zoneNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, zone);
-        var zoneYesterday = zoneNow.AddDays(-1);
 
-        plot.Title($"{zoneYesterday:d MMMM yyyy (dddd)}");
-        plot.Axes.Bottom.Label.Text = zone.StandardName.ToLower();
+        plot.Title($"{zoneNow:h:mmtt} {zone.StandardName} {zoneNow:(d MMM yyyy)}");
+        plot.Axes.Bottom.Label.Text = "hours";
         plot.Axes.Left.Label.Text = "mmol / L";
     }
 
@@ -61,70 +48,57 @@ internal sealed partial class DayPlotter : Plotter, IDayPlotter
             .Where(e => e.Timestamp >= timeStart)
             .Select(e => new
             {
-                e.Timestamp,
+                MillisecondsAgo = e.Timestamp - timeEnd,
                 e.MillimolePerLiter,
             });
 
         double minimumY = 2;
         double maximumY = 16;
 
-        var zone = GetTimeZoneInfo();
-
         foreach (var datum in data)
         {
-            var dt = DateTimeOffset.FromUnixTimeMilliseconds(datum.Timestamp);
-            var x = TimeZoneInfo.ConvertTime(dt, zone).DateTime;
+            var x = MillisecondsToHours(datum.MillisecondsAgo);
             var y = datum.MillimolePerLiter;
 
             minimumY = Math.Min(minimumY, y);
             maximumY = Math.Max(maximumY, y);
 
             var color = GetBglMarkerColor(y);
-
-            plot.Add.Marker(x.ToOADate(), y, MarkerShape.FilledCircle, size: 10, color);
+            plot.Add.Marker(x, y, MarkerShape.FilledCircle, size: 10, color);
         }
 
-        var now = TimeZoneInfo.ConvertTime(DateTime.Now, zone);
-        var leftLimit = now.AddHours(-(Hours + 0.1));
-        var rightLimit = now.AddHours(0.1);
-
-        plot.Axes.SetLimitsX(leftLimit.ToOADate(), rightLimit.ToOADate());
+        plot.Axes.SetLimitsX(-(Hours + 0.1), 0.1);
         plot.Axes.SetLimitsY(minimumY, maximumY);
     }
 
     private void AddBolusData(Plot plot)
     {
-        var start = DateTime.UtcNow.AddHours(-Hours);
+        var start = DateTime.UtcNow.AddHours(-(Hours + 0.25));
 
         var data = _context.Treatments
             .Where(e => e.SysTime >= start)
-            .Where(static e => e.Carbs != null)
+            .Where(static e => e.Insulin != null)
             .Select(e => new
             {
-                e.SysTime,
-                Carbs = e.Carbs!.Value,
+                X = (e.SysTime - DateTime.UtcNow).TotalHours,
+                Insulin = e.Insulin!.Value,
             });
-
-        var zone = GetTimeZoneInfo();
 
         foreach (var datum in data)
         {
-            var dt = DateTime.SpecifyKind(datum.SysTime, DateTimeKind.Utc);
-            var x = TimeZoneInfo.ConvertTime(dt, zone);
-
             var line = plot.Add.VerticalLine(
-                x.ToOADate(),
+                datum.X,
                 width: 1,
                 Color.FromColor(System.Drawing.Color.Blue),
                 LinePattern.Solid);
 
-            line.LabelText = $"{datum.Carbs} carbs";
+            line.LabelText = $"{datum.Insulin}U";
             line.LabelOppositeAxis = true;
             line.LabelRotation = -90;
             line.LabelBackgroundColor = Colors.Transparent;
             line.LabelFontColor = Color.FromColor(System.Drawing.Color.Blue);
-            line.LabelFontSize = 14;
-            line.LabelOffsetY = GetBolusLabelOffsetY(plot, x.ToOADate());
+            line.LabelFontSize = 10;
+            line.LabelOffsetY = GetBolusLabelOffsetY(plot, datum.X);
             line.LabelOffsetX = 2;
 
             plot.MoveToBottom(line);
