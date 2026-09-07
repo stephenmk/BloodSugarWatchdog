@@ -22,6 +22,8 @@ public static class ApplicationPaths
 
     public static string GetSqliteConnectionString(string username)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(username, nameof(username));
+
         var dirPath = Path.Join(EnvironmentPaths.LocalDataPath, AppName, username);
 
         if (!Directory.Exists(dirPath))
