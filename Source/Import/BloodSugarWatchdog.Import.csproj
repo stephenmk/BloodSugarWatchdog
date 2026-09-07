@@ -11,6 +11,6 @@
     <PackageReference Include="System.CommandLine" Version="2.0.11" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BloodSugarWatchdog.Data\BloodSugarWatchdog.Data.csproj" />
+    <ProjectReference Include="..\Data\BloodSugarWatchdog.Data.csproj" />
   </ItemGroup>
 </Project>

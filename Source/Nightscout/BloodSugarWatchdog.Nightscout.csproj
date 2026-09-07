@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.11" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BloodSugarWatchdog.Import\BloodSugarWatchdog.Import.csproj" />
-    <ProjectReference Include="..\BloodSugarWatchdog.Data\BloodSugarWatchdog.Data.csproj" />
+    <ProjectReference Include="..\Import\BloodSugarWatchdog.Import.csproj" />
+    <ProjectReference Include="..\Data\BloodSugarWatchdog.Data.csproj" />
   </ItemGroup>
 </Project>

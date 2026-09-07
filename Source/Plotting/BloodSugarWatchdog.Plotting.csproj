@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BloodSugarWatchdog.Data\BloodSugarWatchdog.Data.csproj" />
+    <ProjectReference Include="..\Data\BloodSugarWatchdog.Data.csproj" />
   </ItemGroup>
 
 </Project>
