@@ -4,6 +4,7 @@
     <ProjectReference Include="..\Nightscout\BloodSugarBot.Nightscout.csproj" />
     <ProjectReference Include="..\Notify\BloodSugarBot.Notify.csproj" />
     <ProjectReference Include="..\Plotting\BloodSugarBot.Plotting.csproj" />
+    <ProjectReference Include="..\Data\BloodSugarBot.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

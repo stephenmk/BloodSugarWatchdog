@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Plotting\BloodSugarBot.Plotting.csproj" />
     <ProjectReference Include="..\Notify\BloodSugarBot.Notify.csproj" />
+    <ProjectReference Include="..\Data\BloodSugarBot.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
