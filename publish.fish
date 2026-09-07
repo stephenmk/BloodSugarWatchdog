@@ -20,7 +20,7 @@ for project in $projects
 
     rsync -avz --delete \
         ./publish/ \
-        nightscout:~/.local/bin/$project/
+        nightscout:~/.local/bin/BloodSugarBot.$project/
     or exit
 
     rm -r ./publish
