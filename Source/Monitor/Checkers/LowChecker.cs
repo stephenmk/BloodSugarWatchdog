@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using System.Collections.Immutable;
-using BloodSugarWatchdog.Notify;
-using BloodSugarWatchdog.Plotting;
+using BloodSugarBot.Notify;
+using BloodSugarBot.Plotting;
 using Microsoft.Extensions.Options;
 
-namespace BloodSugarWatchdog.Monitor.Checkers;
+namespace BloodSugarBot.Monitor.Checkers;
 
 internal sealed class LowChecker
 (

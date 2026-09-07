@@ -1,9 +1,0 @@
-<Solution>
-  <Project Path="Source/DailyReport/BloodSugarWatchdog.DailyReport.csproj" />
-  <Project Path="Source/Data/BloodSugarWatchdog.Data.csproj" />
-  <Project Path="Source/Import/BloodSugarWatchdog.Import.csproj" />
-  <Project Path="Source/Monitor/BloodSugarWatchdog.Monitor.csproj" />
-  <Project Path="Source/Nightscout/BloodSugarWatchdog.Nightscout.csproj" />
-  <Project Path="Source/Notify/BloodSugarWatchdog.Notify.csproj" />
-  <Project Path="Source/Plotting/BloodSugarWatchdog.Plotting.csproj" />
-</Solution>

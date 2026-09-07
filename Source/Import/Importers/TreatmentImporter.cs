@@ -3,12 +3,12 @@
 
 using System.Collections.Frozen;
 using System.Text.Json.Nodes;
-using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Data.Entities;
+using BloodSugarBot.Data;
+using BloodSugarBot.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import.Importers;
+namespace BloodSugarBot.Import.Importers;
 
 internal sealed partial class TreatmentImporter
 (

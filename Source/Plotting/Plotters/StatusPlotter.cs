@@ -1,13 +1,13 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using BloodSugarWatchdog.Data;
+using BloodSugarBot.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ScottPlot;
 using ScottPlot.Plottables;
 
-namespace BloodSugarWatchdog.Plotting.Plotters;
+namespace BloodSugarBot.Plotting.Plotters;
 
 internal sealed partial class StatusPlotter : Plotter, IStatusPlotter
 {

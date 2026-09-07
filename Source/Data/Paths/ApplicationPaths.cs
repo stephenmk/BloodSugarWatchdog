@@ -3,11 +3,11 @@
 
 using Microsoft.Data.Sqlite;
 
-namespace BloodSugarWatchdog.Data.Paths;
+namespace BloodSugarBot.Data.Paths;
 
 public static class ApplicationPaths
 {
-    private const string AppName = "BloodSugarWatchdog";
+    private const string AppName = "BloodSugarBot";
 
     public static string GetAppCacheDirPath()
     {

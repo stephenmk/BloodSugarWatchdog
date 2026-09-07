@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using System.Threading.Channels;
-using BloodSugarWatchdog.Import;
+using BloodSugarBot.Import;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BloodSugarWatchdog.Nightscout;
+namespace BloodSugarBot.Nightscout;
 
 public static class ServiceCollectionExtensions
 {

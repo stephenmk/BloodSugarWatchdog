@@ -3,11 +3,11 @@
 
 using System.Text.Json.Nodes;
 using System.Threading.Channels;
-using BloodSugarWatchdog.Import;
+using BloodSugarBot.Import;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Nightscout;
+namespace BloodSugarBot.Nightscout;
 
 internal sealed partial class NightscoutService
 (

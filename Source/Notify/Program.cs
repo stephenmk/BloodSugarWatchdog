@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Notify;
+namespace BloodSugarBot.Notify;
 
 /// <summary>
 /// Command-line executable for testing purposes.
@@ -28,6 +28,6 @@ internal static class Program
 
         var notifier = host.Services.GetRequiredService<INotifyService>();
 
-        await notifier.PostImageAsync("/home/stephen/.cache/BloodSugarWatchdog/plot.png", "test", default);
+        await notifier.PostImageAsync("/home/stephen/.cache/BloodSugarBot/plot.png", "test", default);
     }
 }

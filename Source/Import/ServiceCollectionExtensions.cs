@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using System.Text.Json.Nodes;
-using BloodSugarWatchdog.Import.Importers;
+using BloodSugarBot.Import.Importers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BloodSugarWatchdog.Import;
+namespace BloodSugarBot.Import;
 
 public static class ServiceCollectionExtensions
 {

@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Plotting\BloodSugarWatchdog.Plotting.csproj" />
-    <ProjectReference Include="..\Notify\BloodSugarWatchdog.Notify.csproj" />
+    <ProjectReference Include="..\Nightscout\BloodSugarBot.Nightscout.csproj" />
+    <ProjectReference Include="..\Notify\BloodSugarBot.Notify.csproj" />
+    <ProjectReference Include="..\Plotting\BloodSugarBot.Plotting.csproj" />
   </ItemGroup>
 
   <ItemGroup>

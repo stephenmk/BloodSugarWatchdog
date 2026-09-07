@@ -3,13 +3,13 @@
 
 using System.Collections.Immutable;
 using System.Threading.Channels;
-using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Monitor.Checkers;
+using BloodSugarBot.Data;
+using BloodSugarBot.Monitor.Checkers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace BloodSugarWatchdog.Monitor;
+namespace BloodSugarBot.Monitor;
 
 internal readonly record struct Bgl(long Timestamp, double MillimolePerLiter);
 

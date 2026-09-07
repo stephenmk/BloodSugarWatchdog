@@ -1,12 +1,12 @@
 ﻿// Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Monitor;
-using BloodSugarWatchdog.Monitor.Checkers;
-using BloodSugarWatchdog.Nightscout;
-using BloodSugarWatchdog.Notify;
-using BloodSugarWatchdog.Plotting;
+using BloodSugarBot.Data;
+using BloodSugarBot.Monitor;
+using BloodSugarBot.Monitor.Checkers;
+using BloodSugarBot.Nightscout;
+using BloodSugarBot.Notify;
+using BloodSugarBot.Plotting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

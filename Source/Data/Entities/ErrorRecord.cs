@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BloodSugarWatchdog.Data.Entities;
+namespace BloodSugarBot.Data.Entities;
 
 [Index(nameof(UniqueIdentifier), IsUnique = false)]
 public sealed class ErrorRecord

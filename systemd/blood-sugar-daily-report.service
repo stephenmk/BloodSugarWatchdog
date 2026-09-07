@@ -4,8 +4,8 @@ Wants=blood-sugar-daily-report.timer
 
 [Service]
 Type=oneshot
-ExecStart=%h/.local/bin/BloodSugarWatchdog.DailyReport/BloodSugarWatchdog.DailyReport "Blood sugar daily report"
-WorkingDirectory=%h/.local/bin/BloodSugarWatchdog.DailyReport
+ExecStart=%h/.local/bin/BloodSugarBot.DailyReport/BloodSugarBot.DailyReport "Blood sugar daily report"
+WorkingDirectory=%h/.local/bin/BloodSugarBot.DailyReport
 
 # Capabilities
 AmbientCapabilities=

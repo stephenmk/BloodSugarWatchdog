@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarBot.Data;
 
 public sealed record DataOptions
 {

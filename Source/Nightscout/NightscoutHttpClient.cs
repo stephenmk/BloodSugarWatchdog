@@ -4,7 +4,7 @@
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 
-namespace BloodSugarWatchdog.Nightscout;
+namespace BloodSugarBot.Nightscout;
 
 internal sealed class NightscoutHttpClient(HttpClient httpClient)
 {

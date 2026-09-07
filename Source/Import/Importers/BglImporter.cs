@@ -3,13 +3,13 @@
 
 using System.Collections.Frozen;
 using System.Text.Json.Nodes;
-using BloodSugarWatchdog.Data;
-using BloodSugarWatchdog.Data.Entities;
-using BloodSugarWatchdog.Data.Enums;
+using BloodSugarBot.Data;
+using BloodSugarBot.Data.Entities;
+using BloodSugarBot.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import.Importers;
+namespace BloodSugarBot.Import.Importers;
 
 internal sealed partial class BglImporter
 (

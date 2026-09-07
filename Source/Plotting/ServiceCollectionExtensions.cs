@@ -1,10 +1,10 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using BloodSugarWatchdog.Plotting.Plotters;
+using BloodSugarBot.Plotting.Plotters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BloodSugarWatchdog.Plotting;
+namespace BloodSugarBot.Plotting;
 
 public static class ServiceCollectionExtensions
 {

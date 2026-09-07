@@ -1,12 +1,12 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using BloodSugarWatchdog.Data.Paths;
+using BloodSugarBot.Data.Paths;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarBot.Data;
 
 public static class ServiceCollectionExtensions
 {

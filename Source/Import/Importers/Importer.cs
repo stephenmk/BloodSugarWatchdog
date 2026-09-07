@@ -4,10 +4,10 @@
 using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using BloodSugarWatchdog.Data;
+using BloodSugarBot.Data;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import.Importers;
+namespace BloodSugarBot.Import.Importers;
 
 internal abstract partial class Importer
 {

@@ -6,8 +6,8 @@ StartLimitBurst=5
 
 [Service]
 Type=exec
-ExecStart=%h/.local/bin/BloodSugarWatchdog.Monitor/BloodSugarWatchdog.Monitor
-WorkingDirectory=%h/.local/bin/BloodSugarWatchdog.Monitor
+ExecStart=%h/.local/bin/BloodSugarBot.Monitor/BloodSugarBot.Monitor
+WorkingDirectory=%h/.local/bin/BloodSugarBot.Monitor
 Restart=on-failure
 
 # Capabilities

@@ -3,7 +3,7 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BloodSugarWatchdog.Data.Entities;
+namespace BloodSugarBot.Data.Entities;
 
 public sealed class Treatment
 {

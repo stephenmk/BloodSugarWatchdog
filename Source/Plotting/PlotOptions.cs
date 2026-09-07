@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-namespace BloodSugarWatchdog.Plotting;
+namespace BloodSugarBot.Plotting;
 
 public sealed record PlotOptions
 {

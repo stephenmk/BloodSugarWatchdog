@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="Source/DailyReport/BloodSugarBot.DailyReport.csproj" />
+  <Project Path="Source/Data/BloodSugarBot.Data.csproj" />
+  <Project Path="Source/Import/BloodSugarBot.Import.csproj" />
+  <Project Path="Source/Monitor/BloodSugarBot.Monitor.csproj" />
+  <Project Path="Source/Nightscout/BloodSugarBot.Nightscout.csproj" />
+  <Project Path="Source/Notify/BloodSugarBot.Notify.csproj" />
+  <Project Path="Source/Plotting/BloodSugarBot.Plotting.csproj" />
+</Solution>

@@ -6,8 +6,8 @@ StartLimitBurst=5
 
 [Service]
 Type=exec
-ExecStart=%h/.local/bin/BloodSugarWatchdog.Nightscout/BloodSugarWatchdog.Nightscout
-WorkingDirectory=%h/.local/bin/BloodSugarWatchdog.Nightscout
+ExecStart=%h/.local/bin/BloodSugarBot.Nightscout/BloodSugarBot.Nightscout
+WorkingDirectory=%h/.local/bin/BloodSugarBot.Nightscout
 Restart=on-failure
 
 # Capabilities

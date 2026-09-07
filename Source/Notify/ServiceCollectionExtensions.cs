@@ -4,7 +4,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace BloodSugarWatchdog.Notify;
+namespace BloodSugarBot.Notify;
 
 public static class ServiceCollectionExtensions
 {

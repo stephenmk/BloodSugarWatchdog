@@ -1,10 +1,10 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using BloodSugarWatchdog.Data.Entities;
+using BloodSugarBot.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarBot.Data;
 
 public sealed class BloodSugarContext(DbContextOptions<BloodSugarContext> options) : DbContext(options)
 {

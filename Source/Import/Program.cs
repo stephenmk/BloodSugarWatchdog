@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using System.CommandLine;
-using BloodSugarWatchdog.Data;
+using BloodSugarBot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace BloodSugarWatchdog.Import;
+namespace BloodSugarBot.Import;
 
 internal static class Program
 {

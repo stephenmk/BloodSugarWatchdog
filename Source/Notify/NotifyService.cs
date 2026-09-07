@@ -4,7 +4,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace BloodSugarWatchdog.Notify;
+namespace BloodSugarBot.Notify;
 
 public interface INotifyService
 {

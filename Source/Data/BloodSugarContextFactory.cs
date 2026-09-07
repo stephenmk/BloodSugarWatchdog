@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using BloodSugarWatchdog.Data.Paths;
+using BloodSugarBot.Data.Paths;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace BloodSugarWatchdog.Data;
+namespace BloodSugarBot.Data;
 
 /// <summary>
 /// This class is only needed to produce new migration files.
