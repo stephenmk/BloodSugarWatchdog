@@ -3,6 +3,7 @@
 
 using System.CommandLine;
 using BloodSugarBot.Data;
+using BloodSugarBot.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,11 +28,11 @@ internal static class Program
         switch (parsedArgs.DataType)
         {
             case DataType.Bgl:
-                var bglImporter = host.Services.GetRequiredService<IBglImporter>();
+                var bglImporter = host.Services.GetRequiredService<IImporter<BloodGlucoseEntry>>();
                 bglImporter.Import(parsedArgs.Directory);
                 break;
             case DataType.Treatment:
-                var treatmentImporter = host.Services.GetRequiredService<ITreatmentImporter>();
+                var treatmentImporter = host.Services.GetRequiredService<IImporter<BloodGlucoseTreatment>>();
                 treatmentImporter.Import(parsedArgs.Directory);
                 break;
         }

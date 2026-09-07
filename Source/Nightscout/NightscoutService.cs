@@ -1,8 +1,9 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using System.Text.Json.Nodes;
+using System.Collections.Immutable;
 using System.Threading.Channels;
+using BloodSugarBot.Dto;
 using BloodSugarBot.Import;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,8 +14,8 @@ internal sealed partial class NightscoutService
 (
     ILogger<NightscoutService> logger,
     NightscoutHttpClient client,
-    IBglImporter bglImporter,
-    ITreatmentImporter treatmentImporter,
+    IImporter<BloodGlucoseEntry> bglImporter,
+    IImporter<BloodGlucoseTreatment> treatmentImporter,
     ChannelWriter<long> eventWriter
 ) :
     BackgroundService
@@ -41,18 +42,18 @@ internal sealed partial class NightscoutService
 
     private sealed record Data
     (
-        JsonArray Entries,
-        JsonArray Treatments
+        ImmutableArray<BloodGlucoseEntry> Entries,
+        ImmutableArray<BloodGlucoseTreatment> Treatments
     );
 
     private async Task<Data> GetDataAsync(CancellationToken ct)
     {
-        JsonArray entries = [];
-        JsonArray treatments = [];
+        ImmutableArray<BloodGlucoseEntry> entries = [];
+        ImmutableArray<BloodGlucoseTreatment> treatments = [];
         try
         {
-            entries = await client.GetEntriesAsync(ct) ?? [];
-            treatments = await client.GetTreatmentsAsync(ct) ?? [];
+            entries = await client.GetEntriesAsync(ct);
+            treatments = await client.GetTreatmentsAsync(ct);
         }
         catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
         {

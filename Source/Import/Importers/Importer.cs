@@ -1,20 +1,18 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using System.Collections.Frozen;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using BloodSugarBot.Data;
 using Microsoft.Extensions.Logging;
 
 namespace BloodSugarBot.Import.Importers;
 
-internal abstract partial class Importer
+internal abstract partial class Importer<T> : IImporter<T>
 {
-    protected readonly ILogger<Importer> _logger;
+    protected readonly ILogger<Importer<T>> _logger;
     protected readonly BloodSugarContext _context;
 
-    protected Importer(ILogger<Importer> logger, BloodSugarContext context)
+    protected Importer(ILogger<Importer<T>> logger, BloodSugarContext context)
     {
         _logger = logger;
         _context = context;
@@ -26,26 +24,21 @@ internal abstract partial class Importer
         using (var transaction = _context.Database.BeginTransaction())
         {
             Initialize();
-            count = ImportDirectory(directory);
             transaction.Commit();
         }
+        count = ImportDirectory(directory);
         LogNewEntries(count);
         return count;
     }
 
-    public int Import(JsonArray array)
+    public int Import(IEnumerable<T> objs)
     {
         int count = 0;
         using (var transaction = _context.Database.BeginTransaction())
         {
             Initialize();
-            foreach (var node in array)
+            foreach (var obj in objs)
             {
-                if (node is not JsonObject obj)
-                {
-                    LogInvalidNode(node?.GetElementIndex());
-                    continue;
-                }
                 count += ImportObject(obj);
             }
             transaction.Commit();
@@ -75,70 +68,41 @@ internal abstract partial class Importer
 
     private int ImportFile(FileInfo file)
     {
+        using var transaction = _context.Database.BeginTransaction();
         Console.Error.WriteLine(file.FullName);
-        Dictionary<string, JsonObject> data;
+        Dictionary<string, T> data;
 
         using (var stream = file.OpenRead())
-            data = JsonSerializer.Deserialize<Dictionary<string, JsonObject>>(stream) ?? [];
+            data = JsonSerializer.Deserialize<Dictionary<string, T>>(stream) ?? [];
 
         int count = 0;
 
         foreach (var (key, obj) in data)
+        {
             count += ImportObject(obj);
+        }
+
+        transaction.Commit();
 
         return count;
     }
 
-    private int ImportObject(JsonObject obj)
+    private int ImportObject(T obj)
     {
         int count = 0;
         try
         {
-            foreach (var (property, _) in obj)
-            {
-                if (!KnownProperties.Contains(property))
-                    throw new Exception($"Unknown property name `{property}`");
-            }
             if (AddObject(obj))
                 count++;
         }
         catch (Exception ex)
         {
             LogInvalidObject(ex.Message);
-            AddErrorRecord(obj, ex);
         }
         return count;
     }
 
-    private void AddErrorRecord(JsonObject obj, Exception ex)
-    {
-        var uniqueIdentifier = obj.TryGetPropertyValue("uuid", out var uuid) && uuid is not null
-            ? uuid.ToString()
-            : obj.TryGetPropertyValue("_id", out var id) && id is not null
-            ? id.ToString()
-            : null;
-
-        if (uniqueIdentifier is not null && _context.ErrorRecords.Any(r => r.UniqueIdentifier == uniqueIdentifier))
-            return;
-
-        _context.ErrorRecords.Add(new()
-        {
-            Id = default,
-            CreatedAt = DateTime.UtcNow,
-            UniqueIdentifier = uniqueIdentifier,
-            Message = ex.Message,
-            StackTrace = ex.StackTrace,
-            RecordJson = JsonSerializer.SerializeToUtf8Bytes(obj),
-        });
-
-        _context.SaveChanges();
-    }
-
-    protected abstract bool AddObject(JsonObject obj);
-    protected abstract FrozenSet<string> KnownProperties { get; }
-
-    [LoggerMessage(LogLevel.Warning, "JsonArray contains unexpected node type at index `{Index}`")]
-    partial void LogInvalidNode(int? index);
+    protected abstract bool AddObject(T obj);
 
     [LoggerMessage(LogLevel.Warning, "Exception occurred while processing object: `{Message}`")]
     partial void LogInvalidObject(string message);

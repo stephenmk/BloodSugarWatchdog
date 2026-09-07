@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using System.Text.Json.Nodes;
+using BloodSugarBot.Dto;
 using BloodSugarBot.Import.Importers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,18 +11,12 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddImportServices(this IServiceCollection services)
         => services
-            .AddTransient<IBglImporter, BglImporter>()
-            .AddTransient<ITreatmentImporter, TreatmentImporter>();
+            .AddTransient<IImporter<BloodGlucoseEntry>, BglImporter>()
+            .AddTransient<IImporter<BloodGlucoseTreatment>, TreatmentImporter>();
 }
 
-public interface IBglImporter
+public interface IImporter<T>
 {
     int Import(DirectoryInfo directory);
-    int Import(JsonArray array);
-}
-
-public interface ITreatmentImporter
-{
-    int Import(DirectoryInfo directory);
-    int Import(JsonArray array);
+    int Import(IEnumerable<T> entries);
 }

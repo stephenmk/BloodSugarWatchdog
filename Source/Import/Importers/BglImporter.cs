@@ -1,11 +1,10 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using System.Collections.Frozen;
-using System.Text.Json.Nodes;
 using BloodSugarBot.Data;
 using BloodSugarBot.Data.Entities;
 using BloodSugarBot.Data.Enums;
+using BloodSugarBot.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -16,8 +15,7 @@ internal sealed partial class BglImporter
     ILogger<BglImporter> logger,
     BloodSugarContext context
 ) :
-    Importer(logger, context),
-    IBglImporter
+    Importer<BloodGlucoseEntry>(logger, context)
 {
     protected override void Initialize()
     {
@@ -44,28 +42,26 @@ internal sealed partial class BglImporter
         _context.SaveChanges();
     }
 
-    protected override bool AddObject(JsonObject obj)
+    protected override bool AddObject(BloodGlucoseEntry obj)
     {
-        var id = (string)obj["_id"]!;
-
-        if (_context.BglEntries.Any(bgl => bgl.Id == id))
+        if (_context.BglEntries.Any(bgl => bgl.Id == obj.Id))
             return false;
 
         _context.BglEntries.Add(new BglEntry
         {
-            Id = id,
-            Type = (string)obj["type"]!,
+            Id = obj.Id,
+            Type = obj.Type,
             DeviceId = GetDeviceId(obj),
-            Sgv = (int)obj["sgv"]!,
+            Sgv = obj.Sgv,
             Timestamp = GetTimestamp(obj),
-            Delta = (decimal)obj["delta"]!,
-            Filtered = (int)obj["filtered"]!,
-            Unfiltered = (int)obj["unfiltered"]!,
-            Rssi = (int)obj["rssi"]!,
-            UtcOffset = (int)obj["utcOffset"]!,
-            Noise = (int)obj["noise"]!,
+            Delta = obj.Delta,
+            Filtered = obj.Filtered,
+            Unfiltered = obj.Unfiltered,
+            Rssi = obj.Rssi,
+            UtcOffset = obj.UtcOffset,
+            Noise = obj.Noise,
             SysTime = GetSysTime(obj),
-            DirectionType = DirectionToDirectionType((string)obj["direction"]!),
+            DirectionType = DirectionToDirectionType(obj.Direction),
         });
 
         _context.SaveChanges();
@@ -73,58 +69,54 @@ internal sealed partial class BglImporter
         return true;
     }
 
-    private int GetDeviceId(JsonObject obj)
+    private int GetDeviceId(BloodGlucoseEntry obj)
     {
-        var name = (string)obj["device"]!;
-
-        if (!_context.BglDevices.Any(d => d.Name == name))
+        if (!_context.BglDevices.Any(d => d.Name == obj.Device))
         {
             _context.BglDevices.Add(new BglDevice
             {
                 Id = default,
-                Name = name,
+                Name = obj.Device,
             });
             _context.SaveChanges();
         }
 
         return _context.BglDevices
-            .Where(d => d.Name == name)
+            .Where(d => d.Name == obj.Device)
             .First()
             .Id;
     }
 
-    private static long GetTimestamp(JsonObject obj)
+    private static long GetTimestamp(BloodGlucoseEntry obj)
     {
-        if (obj.ContainsKey("mills") && obj.ContainsKey("date"))
+        if (obj.Mills.HasValue && obj.Date.HasValue)
         {
-            var mills = (long)(double)obj["mills"]!;
-            var date = (long)(double)obj["date"]!;
-            if (mills != date)
+            if (obj.Mills.Value != obj.Date.Value)
                 throw new Exception("`mills` and `date` values are not equal");
-            return mills;
+            return obj.Mills.Value;
         }
-        else if (obj.ContainsKey("mills"))
-            return (long)(double)obj["mills"]!;
-        else if (obj.ContainsKey("date"))
-            return (long)(double)obj["date"]!;
+        else if (obj.Mills.HasValue)
+            return obj.Mills.Value;
+        else if (obj.Date.HasValue)
+            return obj.Date.Value;
         else
             throw new Exception("No `date` or `mills` property found");
     }
 
-    private static DateTime GetSysTime(JsonObject obj)
+    private static DateTime GetSysTime(BloodGlucoseEntry obj)
     {
-        if (obj.ContainsKey("sysTime") && obj.ContainsKey("dateString"))
+        if (obj.SysTime is not null && obj.DateString is not null)
         {
-            var sysTime = DateTime.Parse((string)obj["sysTime"]!).ToUniversalTime();
-            var date = DateTime.Parse((string)obj["dateString"]!).ToUniversalTime();
+            var sysTime = DateTimeOffset.Parse(obj.SysTime);
+            var date = DateTimeOffset.Parse(obj.DateString);
             if (sysTime != date)
                 throw new Exception("`sysTime` and `dateString` values are not equal");
-            return sysTime;
+            return sysTime.UtcDateTime;
         }
-        else if (obj.ContainsKey("sysTime"))
-            return DateTime.Parse((string)obj["sysTime"]!).ToUniversalTime();
-        else if (obj.ContainsKey("dateString"))
-            return DateTime.Parse((string)obj["dateString"]!).ToUniversalTime();
+        else if (obj.SysTime is not null)
+            return DateTimeOffset.Parse(obj.SysTime).UtcDateTime;
+        else if (obj.DateString is not null)
+            return DateTimeOffset.Parse(obj.DateString).UtcDateTime;
         else
             throw new Exception("No `sysTime` or `dateString` property found");
     }
@@ -152,24 +144,4 @@ internal sealed partial class BglImporter
             _                   => throw new ArgumentOutOfRangeException(nameof(direction))
             #pragma warning restore format
         };
-
-    protected override FrozenSet<string> KnownProperties { get; } = new HashSet<string>()
-    {
-        "_id",
-        "date",
-        "dateString",
-        "delta",
-        "device",
-        "direction",
-        "filtered",
-        "mills",
-        "noise",
-        "rssi",
-        "sgv",
-        "sysTime",
-        "type",
-        "unfiltered",
-        "utcOffset",
-    }
-    .ToFrozenSet();
 }

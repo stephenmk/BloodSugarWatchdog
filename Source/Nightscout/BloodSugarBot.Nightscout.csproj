@@ -13,5 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Import\BloodSugarBot.Import.csproj" />
     <ProjectReference Include="..\Data\BloodSugarBot.Data.csproj" />
+    <ProjectReference Include="..\Dto\BloodSugarBot.Dto.csproj" />
   </ItemGroup>
 </Project>

@@ -1,10 +1,9 @@
 // Copyright (c) 2026 Stephen Kraus
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using System.Collections.Frozen;
-using System.Text.Json.Nodes;
 using BloodSugarBot.Data;
 using BloodSugarBot.Data.Entities;
+using BloodSugarBot.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -15,36 +14,33 @@ internal sealed partial class TreatmentImporter
     ILogger<TreatmentImporter> logger,
     BloodSugarContext context
 ) :
-    Importer(logger, context),
-    ITreatmentImporter
+    Importer<BloodGlucoseTreatment>(logger, context)
 {
     protected override void Initialize()
     {
         _context.TreatmentDevices.Load();
     }
 
-    protected override bool AddObject(JsonObject obj)
+    protected override bool AddObject(BloodGlucoseTreatment obj)
     {
-        var id = (string)obj["_id"]!;
-
-        if (_context.Treatments.Any(treatment => treatment.Id == id))
+        if (_context.Treatments.Any(t => t.Id == obj.Id))
             return false;
 
         _context.Treatments.Add(new()
         {
-            Id = id,
-            EventType = (string)obj["eventType"]!,
+            Id = obj.Id,
+            EventType = obj.EventType,
             DeviceId = GetDeviceId(obj),
             Timestamp = GetTimestamp(obj),
-            UUID = (string?)obj["uuid"],
-            Insulin = (double?)obj["insulin"] is double insulin
-                ? Math.Round(insulin, 3)
+            UUID = obj.Uuid,
+            Insulin = obj.Insulin.HasValue
+                ? Math.Round(obj.Insulin.Value, 3)
                 : null,
-            InsulinType = (string?)obj["insulinType"],
-            InsulinInjections = (string?)obj["insulinInjections"],
-            Carbs = (double?)obj["carbs"],
-            Notes = (string?)obj["notes"],
-            UtcOffset = (int)obj["utcOffset"]!,
+            InsulinType = obj.InsulinType,
+            InsulinInjections = obj.InsulinInjections,
+            Carbs = obj.Carbs,
+            Notes = obj.Notes,
+            UtcOffset = obj.UtcOffset,
             SysTime = GetSysTime(obj),
         });
 
@@ -53,60 +49,56 @@ internal sealed partial class TreatmentImporter
         return true;
     }
 
-    private int GetDeviceId(JsonObject obj)
+    private int GetDeviceId(BloodGlucoseTreatment obj)
     {
-        var name = (string?)obj["enteredBy"];
-
-        if (!_context.TreatmentDevices.Any(d => d.Name == name))
+        if (!_context.TreatmentDevices.Any(d => d.Name == obj.EnteredBy))
         {
             _context.TreatmentDevices.Add(new TreatmentDevice
             {
                 Id = default,
-                Name = name,
+                Name = obj.EnteredBy,
             });
             _context.SaveChanges();
         }
 
         return _context.TreatmentDevices
-            .Where(d => d.Name == name)
+            .Where(d => d.Name == obj.EnteredBy)
             .First()
             .Id;
     }
 
-    private static long? GetTimestamp(JsonObject obj)
+    private static long? GetTimestamp(BloodGlucoseTreatment obj)
     {
-        if (obj.ContainsKey("mills") && obj.ContainsKey("timestamp"))
+        if (obj.Mills.HasValue && obj.Timestamp.HasValue)
         {
-            var mills = (long)(double)obj["mills"]!;
-            var timestamp = (long)(double)obj["timestamp"]!;
-            if (mills != timestamp)
+            if (obj.Mills.Value != obj.Timestamp.Value)
                 throw new Exception("`mills` and `timestamp` values are not equal");
-            return mills;
+            return obj.Mills.Value;
         }
-        else if (obj.TryGetPropertyValue("mills", out var m))
-            return (long)(double)m!;
-        else if (obj.TryGetPropertyValue("timestamp", out var t))
-            return (long)(double)t!;
-        else if (obj.TryGetPropertyValue("date", out var d))
-            return (long)(double)d!;
+        else if (obj.Mills.HasValue)
+            return obj.Mills.Value;
+        else if (obj.Timestamp.HasValue)
+            return obj.Timestamp.Value;
+        else if (obj.Date.HasValue)
+            return obj.Date.Value;
         else
             return null;
     }
 
-    private static DateTime GetSysTime(JsonObject obj)
+    private static DateTime GetSysTime(BloodGlucoseTreatment obj)
     {
-        if (obj.ContainsKey("sysTime") && obj.ContainsKey("created_at"))
+        if (obj.SysTime is not null && obj.CreatedAt is not null)
         {
-            var sysTime = DateTime.Parse((string)obj["sysTime"]!).ToUniversalTime();
-            var createdAt = DateTime.Parse((string)obj["created_at"]!).ToUniversalTime();
-            if (sysTime != createdAt)
+            var sysTime = DateTimeOffset.Parse(obj.SysTime);
+            var date = DateTimeOffset.Parse(obj.CreatedAt);
+            if (sysTime != date)
                 throw new Exception("`sysTime` and `created_at` values are not equal");
-            return sysTime;
+            return sysTime.UtcDateTime;
         }
-        else if (obj.ContainsKey("sysTime"))
-            return DateTime.Parse((string)obj["sysTime"]!).ToUniversalTime();
-        else if (obj.ContainsKey("created_at"))
-            return DateTime.Parse((string)obj["created_at"]!).ToUniversalTime();
+        else if (obj.SysTime is not null)
+            return DateTimeOffset.Parse(obj.SysTime).UtcDateTime;
+        else if (obj.CreatedAt is not null)
+            return DateTimeOffset.Parse(obj.CreatedAt).UtcDateTime;
         else
             throw new Exception("No `sysTime` or `created_at` property found");
     }
@@ -116,24 +108,4 @@ internal sealed partial class TreatmentImporter
 
     [LoggerMessage(LogLevel.Information, "Imported {Count:N0} new treatment entries.")]
     protected override partial void LogMultipleNewEntries(int count);
-
-    protected override FrozenSet<string> KnownProperties { get; } = new HashSet<string>()
-    {
-        "_id",
-        "carbs",
-        "created_at",
-        "date",
-        "enteredBy",
-        "eventType",
-        "insulin",
-        "insulinInjections",
-        "insulinType",
-        "mills",
-        "notes",
-        "sysTime",
-        "timestamp",
-        "utcOffset",
-        "uuid",
-    }
-    .ToFrozenSet();
 }
