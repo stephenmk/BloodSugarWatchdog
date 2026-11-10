@@ -42,6 +42,8 @@ internal sealed partial class TreatmentImporter
             Notes = obj.Notes,
             UtcOffset = obj.UtcOffset,
             SysTime = GetSysTime(obj),
+            SrvCreated = obj.SrvCreated,
+            SrvModified = obj.SrvModified,
         });
 
         _context.SaveChanges();

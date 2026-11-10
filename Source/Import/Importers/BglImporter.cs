@@ -62,6 +62,8 @@ internal sealed partial class BglImporter
             Noise = obj.Noise,
             SysTime = GetSysTime(obj),
             DirectionType = DirectionToDirectionType(obj.Direction),
+            SrvCreated = obj.SrvCreated,
+            SrvModified = obj.SrvModified,
         });
 
         _context.SaveChanges();

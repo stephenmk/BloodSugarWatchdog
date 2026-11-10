@@ -23,7 +23,9 @@ public sealed record BloodGlucoseEntry
     [ property: JsonPropertyName("sgv")        ] int     Sgv,
     [ property: JsonPropertyName("unfiltered") ] int     Unfiltered,
     [ property: JsonPropertyName("utcOffset")  ] int     UtcOffset,
-    [ property: JsonPropertyName("mills")      ] long?   Mills
+    [ property: JsonPropertyName("mills")      ] long?   Mills,
+    [ property: JsonPropertyName("srvCreated") ] long    SrvCreated,
+    [ property: JsonPropertyName("srvModified")] long    SrvModified
 );
 
 #pragma warning restore format

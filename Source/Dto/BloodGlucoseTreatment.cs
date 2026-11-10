@@ -23,7 +23,9 @@ public sealed record BloodGlucoseTreatment
     [ property: JsonPropertyName("carbs")             ] double? Carbs,
     [ property: JsonPropertyName("mills")             ] long?   Mills,
     [ property: JsonPropertyName("date")              ] long?   Date,
-    [ property: JsonPropertyName("notes")             ] string? Notes
+    [ property: JsonPropertyName("notes")             ] string? Notes,
+    [ property: JsonPropertyName("srvCreated")        ] long    SrvCreated,
+    [ property: JsonPropertyName("srvModified")       ] long    SrvModified
 );
 
 #pragma warning restore format
