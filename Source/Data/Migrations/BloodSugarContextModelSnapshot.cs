@@ -15,7 +15,7 @@ namespace BloodSugarBot.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.11");
 
             modelBuilder.Entity("BloodSugarBot.Data.Entities.BglDevice", b =>
                 {
@@ -70,6 +70,12 @@ namespace BloodSugarBot.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Sgv")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("SrvCreated")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("SrvModified")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("SysTime")
@@ -153,6 +159,12 @@ namespace BloodSugarBot.Data.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
+
+                    b.Property<long>("SrvCreated")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("SrvModified")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("SysTime")
                         .HasColumnType("TEXT");

@@ -10,6 +10,7 @@ namespace BloodSugarBot.Data;
 /// <summary>
 /// This class is only needed to produce new migration files.
 /// E.g. `dotnet ef migrations add NewMigration -- MyUserName`
+/// Then `dotnet ef database update -- MyUserName`
 /// </summary>
 public sealed class BloodSugarContextFactory : IDesignTimeDbContextFactory<BloodSugarContext>
 {

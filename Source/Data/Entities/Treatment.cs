@@ -19,6 +19,8 @@ public sealed class Treatment
     public required long? Timestamp { get; init; }
     public required DateTime SysTime { get; init; }
     public required int UtcOffset { get; init; }
+    public required long SrvCreated { get; init; }
+    public required long SrvModified { get; init; }
 
     [ForeignKey(nameof(DeviceId))]
     public TreatmentDevice Device { get; init; } = null!;
